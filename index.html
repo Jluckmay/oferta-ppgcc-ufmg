@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grade de Horários — DCC/UFMG 2026/2</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__content">
+      <p class="eyebrow">UFMG · Pós-Graduação · ICEx / Ciência da Computação</p>
+      <h1>Grade de Horários 2026/2</h1>
+      <p class="subtitle">Visualização interativa das ofertas de disciplinas do semestre, organizada por dia e horário.</p>
+      <div class="hero__actions">
+        <button id="btnPrint" class="btn btn--light" type="button">Imprimir / salvar PDF</button>
+        <button id="btnClear" class="btn btn--ghost" type="button">Limpar filtros</button>
+      </div>
+    </div>
+    <div class="hero__panel" aria-label="Resumo da oferta">
+      <div>
+        <strong id="totalCourses">0</strong>
+        <span>disciplinas</span>
+      </div>
+      <div>
+        <strong id="totalMeetings">0</strong>
+        <span>encontros semanais</span>
+      </div>
+      <div>
+        <strong id="totalConflicts">0</strong>
+        <span>horários com conflito</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="toolbar" aria-label="Filtros da grade">
+      <label class="search">
+        <span>Buscar disciplina, código ou turma</span>
+        <input id="searchInput" type="search" placeholder="Ex.: Cibersegurança, DCC831, PG9..." autocomplete="off" />
+      </label>
+
+      <label>
+        <span>Código</span>
+        <select id="codeFilter">
+          <option value="all">Todos</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Idioma</span>
+        <select id="languageFilter">
+          <option value="all">Todos</option>
+          <option value="Português">Português</option>
+          <option value="Inglês">Inglês</option>
+        </select>
+      </label>
+
+      <label class="toggle">
+        <input id="conflictOnly" type="checkbox" />
+        <span>Mostrar apenas horários com mais de uma disciplina</span>
+      </label>
+    </section>
+
+    <section class="legend" aria-label="Legenda">
+      <span><i class="dot dot--pt"></i> Português</span>
+      <span><i class="dot dot--en"></i> Inglês</span>
+      <span><i class="pill-small">!</i> Conflito de horário</span>
+      <span><i class="pill-small pill-small--long">↔</i> Aula ocupa mais de um bloco</span>
+    </section>
+
+    <section class="schedule-card">
+      <div class="schedule-header">
+        <div>
+          <h2>Grade semanal</h2>
+          <p>Os blocos longos são repetidos nos horários que eles atravessam para facilitar a visualização de conflitos.</p>
+        </div>
+        <span id="resultInfo" class="result-info"></span>
+      </div>
+      <div id="scheduleGrid" class="schedule-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="list-card">
+      <div class="schedule-header">
+        <div>
+          <h2>Lista de disciplinas</h2>
+          <p>Clique em uma disciplina para ver detalhes de dias, horários, vagas, idioma e turma.</p>
+        </div>
+      </div>
+      <div id="courseList" class="course-list"></div>
+    </section>
+  </main>
+
+  <dialog id="courseModal" class="modal">
+    <button id="closeModal" class="modal__close" aria-label="Fechar detalhes">×</button>
+    <div id="modalContent"></div>
+  </dialog>
+
+  <footer class="footer">
+    <p>Fonte: Relação de Oferta de Turmas em 2026/2 — Sistema Acadêmico da Pós-Graduação/UFMG.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
