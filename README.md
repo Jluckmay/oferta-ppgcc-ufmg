@@ -2,7 +2,7 @@
 
 Este repositório contém uma página web estática, desenvolvida em **HTML, CSS e JavaScript**, para visualizar a oferta de disciplinas do **PPGCC/UFMG no semestre 2026/2** em formato de grade semanal de horários.
 
-A proposta é facilitar a consulta das disciplinas ofertadas, permitindo ver rapidamente quais turmas acontecem em cada dia e horário, quais salas estão indicadas, quem são os docentes responsáveis e onde existem conflitos de horário.
+A proposta é facilitar a consulta das disciplinas ofertadas, permitindo ver rapidamente quais turmas acontecem em cada dia e horário, quais salas estão indicadas e quem são os docentes responsáveis.
 
 ## Sobre a atualização
 
@@ -19,7 +19,6 @@ Os dados foram organizados com apoio de **Inteligência Artificial**, a partir d
 - Filtro por código da disciplina;
 - Filtro por tipo de disciplina, obrigatória ou optativa;
 - Filtro por possibilidade de matrícula como disciplina isolada;
-- Destaque visual para horários com conflito;
 - Modal com detalhes completos da disciplina;
 - Botão para imprimir ou salvar a grade em PDF pelo navegador;
 - Página totalmente estática, sem necessidade de backend.
@@ -41,23 +40,6 @@ Os dados foram organizados com apoio de **Inteligência Artificial**, a partir d
 └── README.md
 ```
 
-## Como executar
-
-Não é necessário instalar dependências.
-
-Basta clonar o repositório e abrir o arquivo `index.html` no navegador.
-
-```bash
-git clone <url-do-repositorio>
-cd <nome-do-repositorio>
-```
-
-Depois, abra o arquivo:
-
-```txt
-index.html
-```
-
 ## Fonte dos dados
 
 Os dados utilizados foram extraídos do documento de oferta de disciplinas do **PPGCC/UFMG 2026/2**, versão **Oferta PPGCC 20262_v3**, gerado a partir dos dados disponíveis no sistema.
@@ -75,7 +57,6 @@ Como os dados foram estruturados com apoio de IA a partir do documento disponív
 ## Possíveis melhorias futuras
 
 - Permitir selecionar disciplinas e montar uma grade personalizada;
-- Destacar conflitos apenas entre disciplinas selecionadas;
 - Exportar a grade personalizada em PDF;
 - Adicionar modo escuro;
 - Importar automaticamente novas versões da oferta;

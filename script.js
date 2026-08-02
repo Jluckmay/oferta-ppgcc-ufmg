@@ -563,18 +563,16 @@ const state = {
   code: "all",
   type: "all",
   isolated: "all",
-  conflictOnly: false,
 };
 
 const elements = {
   totalCourses: document.querySelector("#totalCourses"),
   scheduledCourses: document.querySelector("#scheduledCourses"),
-  totalConflicts: document.querySelector("#totalConflicts"),
+  roomsCount: document.querySelector("#roomsCount"),
   searchInput: document.querySelector("#searchInput"),
   codeFilter: document.querySelector("#codeFilter"),
   typeFilter: document.querySelector("#typeFilter"),
   isolatedFilter: document.querySelector("#isolatedFilter"),
-  conflictOnly: document.querySelector("#conflictOnly"),
   btnPrint: document.querySelector("#btnPrint"),
   btnClear: document.querySelector("#btnClear"),
   scheduleGrid: document.querySelector("#scheduleGrid"),
@@ -634,10 +632,6 @@ function setupFilters() {
     render();
   });
 
-  elements.conflictOnly.addEventListener("change", (event) => {
-    state.conflictOnly = event.target.checked;
-    render();
-  });
 
   elements.btnPrint.addEventListener("click", () => window.print());
   elements.btnClear.addEventListener("click", clearFilters);
@@ -681,49 +675,28 @@ function getFilteredCourses() {
   });
 }
 
-function meetingKey(meeting) {
-  return `${meeting.day}|${meeting.start}|${meeting.end}`;
-}
-
-function getConflictKeys(courses) {
-  const map = new Map();
-  courses.forEach((course) => {
-    course.meetings.forEach((meeting) => {
-      const key = meetingKey(meeting);
-      if (!map.has(key)) map.set(key, []);
-      map.get(key).push(course.id);
-    });
-  });
-
-  return new Set([...map.entries()].filter(([, ids]) => ids.length > 1).map(([key]) => key));
-}
-
-function coursesForCell(courses, day, slot, conflictKeys) {
+function coursesForCell(courses, day, slot) {
   return courses
     .filter((course) => course.meetings.some((meeting) => (
       meeting.day === day && meeting.start === slot.start && meeting.end === slot.end
     )))
-    .filter((course) => !state.conflictOnly || course.meetings.some((meeting) => conflictKeys.has(meetingKey(meeting))))
     .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 }
 
 function render() {
   const filteredCourses = getFilteredCourses();
-  const conflictKeys = getConflictKeys(filteredCourses);
-  const visibleCourses = state.conflictOnly
-    ? filteredCourses.filter((course) => course.meetings.some((meeting) => conflictKeys.has(meetingKey(meeting))))
-    : filteredCourses;
+  const uniqueRooms = new Set(COURSES.map((course) => course.room).filter(Boolean));
 
   elements.totalCourses.textContent = COURSES.length;
   elements.scheduledCourses.textContent = COURSES.filter((course) => course.meetings.length > 0).length;
-  elements.totalConflicts.textContent = getConflictKeys(COURSES).size;
-  elements.resultInfo.textContent = `${visibleCourses.length} de ${COURSES.length} disciplinas`;
+  elements.roomsCount.textContent = uniqueRooms.size;
+  elements.resultInfo.textContent = `${filteredCourses.length} de ${COURSES.length} disciplinas`;
 
-  renderSchedule(filteredCourses, conflictKeys);
-  renderList(visibleCourses, conflictKeys);
+  renderSchedule(filteredCourses);
+  renderList(filteredCourses);
 }
 
-function renderSchedule(courses, conflictKeys) {
+function renderSchedule(courses) {
   elements.scheduleGrid.innerHTML = "";
 
   const emptyTop = document.createElement("div");
@@ -745,10 +718,9 @@ function renderSchedule(courses, conflictKeys) {
     elements.scheduleGrid.appendChild(timeCell);
 
     DAYS.forEach((day) => {
-      const key = `${day.key}|${slot.start}|${slot.end}`;
-      const items = coursesForCell(courses, day.key, slot, conflictKeys);
+      const items = coursesForCell(courses, day.key, slot);
       const cell = document.createElement("div");
-      cell.className = `grid-cell ${conflictKeys.has(key) ? "cell-conflict" : ""}`;
+      cell.className = "grid-cell";
 
       if (items.length === 0) {
         const empty = document.createElement("div");
@@ -756,23 +728,23 @@ function renderSchedule(courses, conflictKeys) {
         empty.textContent = "Livre";
         cell.appendChild(empty);
       } else {
-        items.forEach((course) => cell.appendChild(createCourseCard(course, conflictKeys.has(key))));
+        items.forEach((course) => cell.appendChild(createCourseCard(course)));
       }
       elements.scheduleGrid.appendChild(cell);
     });
   });
 }
 
-function createCourseCard(course, hasConflict = false) {
+function createCourseCard(course) {
   const button = document.createElement("button");
-  button.className = `course-card course-card--${course.type.toLowerCase()} ${hasConflict ? "course-card--conflict" : ""}`;
+  button.className = `course-card course-card--${course.type.toLowerCase()}`;
   button.type = "button";
   button.addEventListener("click", () => openModal(course));
 
   button.innerHTML = `
     <div class="course-card__top">
       <span class="course-card__name">${escapeHtml(shortName(course.name))}</span>
-      <span class="badge ${hasConflict ? "badge--warning" : ""}">${hasConflict ? "!" : course.type}</span>
+      <span class="badge">${course.type}</span>
     </div>
     <div class="course-card__meta">
       <strong>${escapeHtml(course.code)} · ${escapeHtml(course.className)}</strong><br>
@@ -783,7 +755,7 @@ function createCourseCard(course, hasConflict = false) {
   return button;
 }
 
-function renderList(courses, conflictKeys) {
+function renderList(courses) {
   elements.courseList.innerHTML = "";
 
   if (courses.length === 0) {
@@ -796,7 +768,6 @@ function renderList(courses, conflictKeys) {
     .slice()
     .sort((a, b) => a.number - b.number)
     .forEach((course) => {
-      const hasConflict = course.meetings.some((meeting) => conflictKeys.has(meetingKey(meeting)));
       const item = document.createElement("button");
       item.className = "list-item";
       item.type = "button";
@@ -804,7 +775,7 @@ function renderList(courses, conflictKeys) {
       item.innerHTML = `
         <div class="list-item__title">
           <h3>${escapeHtml(course.number)}. ${escapeHtml(course.name)}</h3>
-          <span class="badge ${hasConflict ? "badge--warning" : ""}">${hasConflict ? "conflito" : course.type}</span>
+          <span class="badge">${course.type}</span>
         </div>
         <div class="meta-grid">
           <div><strong>Código / turma</strong>${escapeHtml(course.code)} · ${escapeHtml(course.className)}</div>
@@ -860,13 +831,11 @@ function clearFilters() {
   state.code = "all";
   state.type = "all";
   state.isolated = "all";
-  state.conflictOnly = false;
 
   elements.searchInput.value = "";
   elements.codeFilter.value = "all";
   elements.typeFilter.value = "all";
   elements.isolatedFilter.value = "all";
-  elements.conflictOnly.checked = false;
   render();
 }
 
