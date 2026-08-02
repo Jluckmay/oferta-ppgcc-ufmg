@@ -1,32 +1,35 @@
-# Grade de Horários – Oferta de Disciplinas 2026/2
+# Grade de Horários — Oferta de Disciplinas PPGCC 2026/2
 
-Este repositório contém uma página web estática desenvolvida em **HTML, CSS e JavaScript** para visualizar, de forma mais clara e agradável, a oferta de disciplinas do semestre **2026/2**.
+Este repositório contém uma página web estática, desenvolvida em **HTML, CSS e JavaScript**, para visualizar a oferta de disciplinas do **PPGCC/UFMG no semestre 2026/2** em formato de grade semanal de horários.
 
-A página apresenta as disciplinas em uma **grade semanal de horários**, permitindo identificar rapidamente em quais dias e horários cada turma será ofertada, além de facilitar a visualização de possíveis conflitos de horário.
+A proposta é facilitar a consulta das disciplinas ofertadas, permitindo ver rapidamente quais turmas acontecem em cada dia e horário, quais salas estão indicadas, quem são os docentes responsáveis e onde existem conflitos de horário.
 
-## Sobre o projeto
+## Sobre a atualização
 
-Este projeto foi desenvolvido com o apoio de **Inteligência Artificial**, a partir do carregamento e interpretação dos dados disponíveis no **Sistema Acadêmico da Pós-Graduação da UFMG**, especificamente da relação de oferta de turmas do semestre 2026/2.
+Esta versão foi atualizada com base no arquivo **Oferta PPGCC 20262_v3**, datado de **31/07/2026**.
 
-A proposta é transformar uma listagem textual/tabular de disciplinas em uma visualização mais acessível, organizada e interativa.
+Os dados foram organizados com apoio de **Inteligência Artificial**, a partir do carregamento dos dados disponíveis no sistema/documento de oferta de disciplinas. A IA foi utilizada para estruturar as informações da tabela original em um formato navegável, visual e interativo.
 
 ## Funcionalidades
 
-- Visualização das disciplinas em grade semanal;
-- Organização por dia da semana e horário;
-- Exibição de nome da disciplina, código, turma e idioma;
-- Identificação visual de horários com mais de uma disciplina;
-- Filtros para facilitar a busca por disciplina, código, turma ou idioma;
-- Interface responsiva e visualmente agradável;
-- Página totalmente estática, sem necessidade de backend;
-- Possibilidade de abrir diretamente no navegador.
+- Grade semanal por dia e horário;
+- Visualização de disciplina, código, turma, sala e docente;
+- Lista completa das disciplinas ofertadas;
+- Filtro por busca textual;
+- Filtro por código da disciplina;
+- Filtro por tipo de disciplina, obrigatória ou optativa;
+- Filtro por possibilidade de matrícula como disciplina isolada;
+- Destaque visual para horários com conflito;
+- Modal com detalhes completos da disciplina;
+- Botão para imprimir ou salvar a grade em PDF pelo navegador;
+- Página totalmente estática, sem necessidade de backend.
 
 ## Tecnologias utilizadas
 
 - HTML5
 - CSS3
 - JavaScript
-- Inteligência Artificial para estruturação inicial dos dados e geração da interface
+- Inteligência Artificial para apoio na estruturação dos dados e geração da interface
 
 ## Estrutura do projeto
 
@@ -36,3 +39,48 @@ A proposta é transformar uma listagem textual/tabular de disciplinas em uma vis
 ├── style.css
 ├── script.js
 └── README.md
+```
+
+## Como executar
+
+Não é necessário instalar dependências.
+
+Basta clonar o repositório e abrir o arquivo `index.html` no navegador.
+
+```bash
+git clone <url-do-repositorio>
+cd <nome-do-repositorio>
+```
+
+Depois, abra o arquivo:
+
+```txt
+index.html
+```
+
+## Fonte dos dados
+
+Os dados utilizados foram extraídos do documento de oferta de disciplinas do **PPGCC/UFMG 2026/2**, versão **Oferta PPGCC 20262_v3**, gerado a partir dos dados disponíveis no sistema.
+
+A oferta e a alocação foram aprovadas pela Câmara do DCC em 03/07/2026 e homologadas pelo Colegiado do PPGCC em 03/07/2026, conforme indicado no próprio documento de oferta.
+
+## Aviso importante
+
+Este projeto **não é um sistema oficial da UFMG**.
+
+Ele foi criado como uma ferramenta auxiliar de visualização, com o objetivo de tornar a consulta da oferta de disciplinas mais simples e agradável.
+
+Como os dados foram estruturados com apoio de IA a partir do documento disponível, recomenda-se conferir o sistema oficial da universidade antes de tomar decisões acadêmicas ou administrativas.
+
+## Possíveis melhorias futuras
+
+- Permitir selecionar disciplinas e montar uma grade personalizada;
+- Destacar conflitos apenas entre disciplinas selecionadas;
+- Exportar a grade personalizada em PDF;
+- Adicionar modo escuro;
+- Importar automaticamente novas versões da oferta;
+- Adicionar link direto para planos de curso quando disponíveis.
+
+## Licença
+
+Este projeto pode ser adaptado livremente para fins acadêmicos, pessoais ou educacionais.

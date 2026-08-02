@@ -14,756 +14,870 @@ const DISPLAY_SLOTS = [
   { start: "19:00", end: "20:40" },
 ];
 
-const COURSES = [
+const RAW_COURSES = [
   {
-    id: "dcc831-p10",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Modelos Generativos para Imagens",
-    code: "DCC831",
-    className: "P10",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "TER", start: "14:55", end: "16:35" },
-      { day: "QUI", start: "14:55", end: "16:35" },
-    ],
+    "number": 1,
+    "code": "DCC831",
+    "name": "TECC: Aprendizado Profundo para Processamento de Linguagem Natural",
+    "className": "PG1",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 17:00/18:40",
+    "teacher": "Adriano Veloso",
+    "room": "DCC 2009",
+    "startDate": "11/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc831-p11",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Seminários Avançados em Grafos e Algoritmos",
-    code: "DCC831",
-    className: "P11",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [{ day: "SEX", start: "13:00", end: "16:35" }],
+    "number": 2,
+    "code": "DCC831",
+    "name": "TECC: Engenharia de Software Experimental",
+    "className": "PG2",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "2a e 4a - 17:00/18:40",
+    "teacher": "Eduardo Figueiredo",
+    "room": "DCC 2009",
+    "startDate": "03/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "SIM",
+    "language": "Português"
   },
   {
-    id: "dcc831-p12",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Theory and Practice of SMT Solving",
-    code: "DCC831",
-    className: "P12",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Inglês",
-    modality: "Presencial",
-    meetings: [
-      { day: "SEG", start: "17:00", end: "18:40" },
-      { day: "QUA", start: "17:00", end: "18:40" },
-    ],
+    "number": 3,
+    "code": "DCC831",
+    "name": "TECC: Engenharia de Software para Sistemas Inteligentes",
+    "className": "PG3",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "2a e 4a - 14:55/16:35",
+    "teacher": "João Eduardo",
+    "room": "DCC 2013",
+    "startDate": "10/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "SIM",
+    "language": "Português"
   },
   {
-    id: "dcc831-p13",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Criptografia - teoria e aplicações",
-    code: "DCC831",
-    className: "P13",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Inglês",
-    modality: "Presencial",
-    meetings: [
-      { day: "SEG", start: "19:00", end: "20:40" },
-      { day: "QUA", start: "19:00", end: "20:40" },
-    ],
+    "number": 4,
+    "code": "DCC831",
+    "name": "TECC: Seminários Avançados em Processamento de Linguagem Natural e Computação Social",
+    "className": "PG4",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "2a e 4a - 14:55/16:35",
+    "teacher": "Jussara",
+    "room": "DCC 2015",
+    "startDate": "10/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "SIM",
+    "language": "Português"
   },
   {
-    id: "dcc831-p14",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: IA Generativa para Música",
-    code: "DCC831",
-    className: "P14",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "TER", start: "17:00", end: "18:40" },
-      { day: "QUI", start: "17:00", end: "18:40" },
-    ],
+    "number": 5,
+    "code": "DCC831",
+    "name": "TECC: Inteligência Artificial: Caracterização e Medição",
+    "className": "PG5",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 14:55/16:35",
+    "teacher": "Wagner",
+    "room": "DCC 2013",
+    "startDate": "11/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc831-p15",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Aprendizado por Reforço",
-    code: "DCC831",
-    className: "P15",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "TER", start: "17:00", end: "18:40" },
-      { day: "QUI", start: "17:00", end: "18:40" },
-    ],
+    "number": 6,
+    "code": "DCC831",
+    "name": "TECC: Bancos de Dados Geográficos e Ciência de Dados Geoespaciais",
+    "className": "PG6",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 13:00/14:40",
+    "teacher": "Clodoveu",
+    "room": "CAD 3 - A406",
+    "startDate": "04/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc831-p16",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Manutenção e Evolução de Software",
-    code: "DCC831",
-    className: "P16",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "SEG", start: "17:00", end: "18:40" },
-      { day: "QUA", start: "17:00", end: "18:40" },
-    ],
+    "number": 7,
+    "code": "DCC831",
+    "name": "TECC: Teste de Software",
+    "className": "PG7",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 19:00/20:40",
+    "teacher": "André Hora",
+    "room": "CAD 3 - A312",
+    "startDate": "04/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc831-p17",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Sistemas Operacionais Avançados",
-    code: "DCC831",
-    className: "P17",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "TER", start: "14:55", end: "16:35" },
-      { day: "QUI", start: "14:55", end: "16:35" },
-    ],
+    "number": 8,
+    "code": "DCC831",
+    "name": "TECC: Otimização Linear Robusta",
+    "className": "PG8",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 13:00/14:40",
+    "teacher": "Márcio Costa",
+    "room": "CAD 3 - A211",
+    "startDate": "11/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "SIM",
+    "language": "Português"
   },
   {
-    id: "dcc831-p18",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Quantitative Information Flow",
-    code: "DCC831",
-    className: "P18",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Inglês",
-    modality: "Presencial",
-    meetings: [
-      { day: "SEG", start: "14:55", end: "16:35" },
-      { day: "QUA", start: "14:55", end: "16:35" },
-    ],
+    "number": 9,
+    "code": "DCC831",
+    "name": "TECC: Grandes Modelos de Linguagem",
+    "className": "PG9",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "2a e 4a - 14:55/16:35",
+    "teacher": "Anísio",
+    "room": "CAD 3 - A313",
+    "startDate": "10/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc831-p19",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Nanocomputação e Nanotecnologia Computacional",
-    code: "DCC831",
-    className: "P19",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "SEG", start: "17:00", end: "18:40" },
-      { day: "QUA", start: "17:00", end: "18:40" },
-    ],
+    "number": 10,
+    "code": "DCC831",
+    "name": "TECC: Theory and Practice of SMT Solving",
+    "className": "P12",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "2a e 4a - 17:00/18:40",
+    "teacher": "Haniel",
+    "room": "CAD 3 - A211",
+    "startDate": "10/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "SIM",
+    "language": "Inglês"
   },
   {
-    id: "dcc831-p20",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Cibersegurança",
-    code: "DCC831",
-    className: "P20",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "SEG", start: "19:00", end: "20:40" },
-      { day: "QUA", start: "19:00", end: "20:40" },
-    ],
+    "number": 11,
+    "code": "DCC831",
+    "name": "TECC: Criptografia – teoria e aplicações (inglês)",
+    "className": "P13",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "2a e 4a - 19:00/20:40",
+    "teacher": "Jeroen",
+    "room": "CAD 3 - A211",
+    "startDate": "10/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "SIM",
+    "language": "Inglês"
   },
   {
-    id: "dcc831-p21",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Computação Natural",
-    code: "DCC831",
-    className: "P21",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "TER", start: "17:00", end: "18:40" },
-      { day: "QUI", start: "17:00", end: "18:40" },
-    ],
+    "number": 12,
+    "code": "DCC831",
+    "name": "TECC: IA Generativa para Música",
+    "className": "P14",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 17:00/18:40",
+    "teacher": "Lucas Ferreira",
+    "room": "CAD 3 - A313",
+    "startDate": "11/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc831-p22",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Heurísticas e Metaheurísticas",
-    code: "DCC831",
-    className: "P22",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "TER", start: "14:55", end: "16:35" },
-      { day: "QUI", start: "14:55", end: "16:35" },
-    ],
+    "number": 13,
+    "code": "DCC831",
+    "name": "TECC: Aprendizado por Reforço",
+    "className": "P15",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 17:00/18:40",
+    "teacher": "Luiz Chaimowicz",
+    "room": "CAD 3 - A213",
+    "startDate": "11/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc831-p23",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Programação e Arquitetura de Computadores Paralelos",
-    code: "DCC831",
-    className: "P23",
-    type: "T",
-    cpv: "S",
-    vacancies: 10,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "SEG", start: "14:55", end: "16:35" },
-      { day: "QUA", start: "14:55", end: "16:35" },
-    ],
+    "number": 14,
+    "code": "DCC831",
+    "name": "TES: Manutenção e Evolução de Software",
+    "className": "P16",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "2a e 4a - 17:00/18:40",
+    "teacher": "Marco Túlio",
+    "room": "CAD 3 - A212",
+    "startDate": "",
+    "plan": "",
+    "elective": "",
+    "isolated": "SIM",
+    "language": "Português"
   },
   {
-    id: "dcc831-p24",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Teoria dos Grafos",
-    code: "DCC831",
-    className: "P24",
-    type: "T",
-    cpv: "S",
-    vacancies: 10,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "TER", start: "13:00", end: "14:40" },
-      { day: "QUI", start: "13:00", end: "14:40" },
-    ],
+    "number": 15,
+    "code": "DCC831",
+    "name": "TECC: Sistemas Operacionais Avançados",
+    "className": "P17",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 14:55/16:35",
+    "teacher": "Marcos Augusto Menezes",
+    "room": "CAD 3 - Aud. B 3001",
+    "startDate": "11/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "SIM",
+    "language": "Português"
   },
   {
-    id: "dcc831-pg1",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Aprendizado Profundo para Processamento de Linguagem Natural",
-    code: "DCC831",
-    className: "PG1",
-    type: "T",
-    cpv: "S",
-    vacancies: 40,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "TER", start: "17:00", end: "18:40" },
-      { day: "QUI", start: "17:00", end: "18:40" },
-    ],
+    "number": 16,
+    "code": "DCC831",
+    "name": "TECC: Quantitative Information Flow (inglês)",
+    "className": "P18",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "2a e 4a - 14:55/16:35",
+    "teacher": "Mário Sérgio",
+    "room": "CAD 3 - A310",
+    "startDate": "10/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "SIM",
+    "language": "Inglês"
   },
   {
-    id: "dcc831-pg2",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Engenharia de Software Experimental",
-    code: "DCC831",
-    className: "PG2",
-    type: "T",
-    cpv: "S",
-    vacancies: 40,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "SEG", start: "17:00", end: "18:40" },
-      { day: "QUA", start: "17:00", end: "18:40" },
-    ],
+    "number": 17,
+    "code": "DCC831",
+    "name": "TECC: Nanocomputação e Nanotecnologia Computacional",
+    "className": "P19",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "2a e 4a - 17:00/18:40",
+    "teacher": "Omar",
+    "room": "CAD 3 - A410",
+    "startDate": "03/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc831-pg3",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Engenharia de Software para Sistemas Inteligentes",
-    code: "DCC831",
-    className: "PG3",
-    type: "T",
-    cpv: "S",
-    vacancies: 40,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "SEG", start: "14:55", end: "16:35" },
-      { day: "QUA", start: "14:55", end: "16:35" },
-    ],
+    "number": 18,
+    "code": "DCC831",
+    "name": "TECC: Cibersegurança",
+    "className": "P20",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 19:00/20:40",
+    "teacher": "Michele Nogueira",
+    "room": "CAD 3 - A208",
+    "startDate": "04/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc831-pg4",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Seminários Avançados em Processamento de Linguagem Natural e Computação Social",
-    code: "DCC831",
-    className: "PG4",
-    type: "T",
-    cpv: "S",
-    vacancies: 40,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "SEG", start: "14:55", end: "16:35" },
-      { day: "QUA", start: "14:55", end: "16:35" },
-    ],
+    "number": 19,
+    "code": "DCC831",
+    "name": "TECC: Computação Natural",
+    "className": "P21",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 17:00/18:40",
+    "teacher": "Gisele",
+    "room": "CAD 3 - A312",
+    "startDate": "11/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc831-pg5",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Inteligência Artificial: Caracterização e Medição",
-    code: "DCC831",
-    className: "PG5",
-    type: "T",
-    cpv: "S",
-    vacancies: 40,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "TER", start: "14:55", end: "16:35" },
-      { day: "QUI", start: "14:55", end: "16:35" },
-    ],
+    "number": 20,
+    "code": "DCC831",
+    "name": "TECC: Heurísticas e Metaheurísticas",
+    "className": "P22",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 14:55/16:35",
+    "teacher": "Thiago Noronha",
+    "room": "CAD 3 - A312",
+    "startDate": "11/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "SIM",
+    "language": "Português"
   },
   {
-    id: "dcc831-pg6",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Bancos de Dados Geográficos e Ciência de Dados Geoespaciais",
-    code: "DCC831",
-    className: "PG6",
-    type: "T",
-    cpv: "S",
-    vacancies: 10,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "TER", start: "17:00", end: "18:40" },
-      { day: "QUI", start: "17:00", end: "18:40" },
-    ],
+    "number": 21,
+    "code": "DCC831",
+    "name": "TECC: Programação e Arquitetura de Computadores Paralelos",
+    "className": "P23",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "2a e 4a - 14:55/16:35",
+    "teacher": "George",
+    "room": "CAD 3 - A406",
+    "startDate": "10/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "SIM",
+    "language": "Português"
   },
   {
-    id: "dcc831-pg7",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Teste de Software",
-    code: "DCC831",
-    className: "PG7",
-    type: "T",
-    cpv: "S",
-    vacancies: 10,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "TER", start: "19:00", end: "20:40" },
-      { day: "QUI", start: "19:00", end: "20:40" },
-    ],
+    "number": 22,
+    "code": "DCC831",
+    "name": "TECC: Teoria dos Grafos",
+    "className": "P24",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 13:00/14:40",
+    "teacher": "Gabriel Coutinho",
+    "room": "CAD 3 - A311",
+    "startDate": "11/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc831-pg8",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Otimização Linear Robusta",
-    code: "DCC831",
-    className: "PG8",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "TER", start: "13:00", end: "14:40" },
-      { day: "QUI", start: "13:00", end: "14:40" },
-    ],
+    "number": 23,
+    "code": "DCC831",
+    "name": "TECC: Projeto de Sistemas Robóticos",
+    "className": "P25",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 19:00/20:40",
+    "teacher": "Paulo Rezeck",
+    "room": "CAD 3 - A410",
+    "startDate": "11/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc831-pg9",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Grandes Modelos de Linguagem",
-    code: "DCC831",
-    className: "PG9",
-    type: "T",
-    cpv: "S",
-    vacancies: 15,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "SEG", start: "14:55", end: "16:35" },
-      { day: "QUA", start: "14:55", end: "16:35" },
-    ],
+    "number": 24,
+    "code": "DCC850",
+    "name": "TECC: Seminários Avançados de Pós-Graduação I",
+    "className": "PG1",
+    "workload": 15,
+    "credits": 1,
+    "type": "OB",
+    "scheduleText": "6a - 10:00/12:40",
+    "teacher": "Pedro",
+    "room": "2077",
+    "startDate": "05/08/2026",
+    "plan": "",
+    "elective": "NÃO",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc850-pg1",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Seminários Avançados de Pós-Graduação I",
-    code: "DCC850",
-    className: "PG1",
-    type: "T",
-    cpv: "S",
-    vacancies: 40,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [{ day: "SEX", start: "10:00", end: "12:40" }],
+    "number": 25,
+    "code": "DCC850",
+    "name": "TECC: Seminários Avançados de Pós-Graduação II",
+    "className": "PG2",
+    "workload": 15,
+    "credits": 1,
+    "type": "OB",
+    "scheduleText": "6a - 10:00/12:40",
+    "teacher": "Fabrício",
+    "room": "2077",
+    "startDate": "05/08/2026",
+    "plan": "",
+    "elective": "NÃO",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc850-pg2",
-    activity: "Tópicos Especiais em Ciência da Computação",
-    name: "TECC: Seminários Avançados de Pós-Graduação II",
-    code: "DCC850",
-    className: "PG2",
-    type: "T",
-    cpv: "S",
-    vacancies: 40,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [{ day: "SEX", start: "10:00", end: "12:40" }],
+    "number": 26,
+    "code": "DCC851",
+    "name": "TECC: Modelos Generativos para Imagens",
+    "className": "PG1",
+    "workload": 30,
+    "credits": 2,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 14:55/16:35",
+    "teacher": "Erickson",
+    "room": "DCC 2014",
+    "startDate": "11/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc865-pg1",
-    activity: "Projeto e Análise de Algoritmos",
-    name: "Projeto e Análise de Algoritmos",
-    code: "DCC865",
-    className: "PG1",
-    type: "T",
-    cpv: "N",
-    vacancies: 25,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "SEG", start: "13:00", end: "14:40" },
-      { day: "QUA", start: "13:00", end: "14:40" },
-    ],
+    "number": 27,
+    "code": "DCC851",
+    "name": "TECC: Seminários Avançados em Grafos e Algoritmos",
+    "className": "PG2",
+    "workload": 30,
+    "credits": 2,
+    "type": "OP",
+    "scheduleText": "6a - 13:00/14:40",
+    "teacher": "Guilherme Gomes",
+    "room": "DCC 2009",
+    "startDate": "14/08/2026",
+    "plan": "",
+    "elective": "",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc865-pg2",
-    activity: "Projeto e Análise de Algoritmos",
-    name: "Projeto e Análise de Algoritmos",
-    code: "DCC865",
-    className: "PG2",
-    type: "T",
-    cpv: "N",
-    vacancies: 25,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "SEG", start: "13:00", end: "14:40" },
-      { day: "QUA", start: "13:00", end: "14:40" },
-    ],
+    "number": 28,
+    "code": "DCC865",
+    "name": "Projeto e Análise de Algoritmos",
+    "className": "PG",
+    "workload": 60,
+    "credits": 4,
+    "type": "OB",
+    "scheduleText": "2a e 4a - 13:00/14:40",
+    "teacher": "Olga",
+    "room": "DCC 2013",
+    "startDate": "",
+    "plan": "",
+    "elective": "NÃO",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc904-pg",
-    activity: "Estágio em Docência I",
-    name: "Estágio em Docência I",
-    code: "DCC904",
-    className: "PG",
-    type: "P",
-    cpv: "N",
-    vacancies: 40,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [{ day: "SEX", start: "14:55", end: "16:35" }],
+    "number": 29,
+    "code": "DCC904",
+    "name": "Estágio em Docência I",
+    "className": "PG",
+    "workload": 30,
+    "credits": 2,
+    "type": "OB",
+    "scheduleText": "",
+    "teacher": "Ericksom",
+    "room": "",
+    "startDate": "",
+    "plan": "",
+    "elective": "NÃO",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc905-pg",
-    activity: "Estágio em Docência II",
-    name: "Estágio em Docência II",
-    code: "DCC905",
-    className: "PG",
-    type: "P",
-    cpv: "N",
-    vacancies: 40,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [{ day: "SEX", start: "17:00", end: "18:40" }],
+    "number": 30,
+    "code": "DCC905",
+    "name": "Estágio em Docência II",
+    "className": "PG",
+    "workload": 30,
+    "credits": 2,
+    "type": "OB",
+    "scheduleText": "",
+    "teacher": "Fabrício",
+    "room": "",
+    "startDate": "",
+    "plan": "",
+    "elective": "NÃO",
+    "isolated": "NÃO",
+    "language": "Português"
   },
   {
-    id: "dcc911-pg",
-    activity: "Robótica Móvel",
-    name: "Robótica Móvel",
-    code: "DCC911",
-    className: "PG",
-    type: "T",
-    cpv: "N",
-    vacancies: 5,
-    language: "Português",
-    modality: "Presencial",
-    meetings: [
-      { day: "TER", start: "13:00", end: "14:40" },
-      { day: "QUI", start: "13:00", end: "14:40" },
-    ],
-  },
+    "number": 31,
+    "code": "DCC911",
+    "name": "Robótica Móvel",
+    "className": "PG",
+    "workload": 60,
+    "credits": 4,
+    "type": "OP",
+    "scheduleText": "3a e 5a - 13:00/14:40",
+    "teacher": "Douglas",
+    "room": "CAD 3 - A407",
+    "startDate": "04/08/2026",
+    "plan": "",
+    "elective": "NÃO",
+    "isolated": "SIM",
+    "language": "Português"
+  }
 ];
 
-const els = {
-  scheduleGrid: document.querySelector("#scheduleGrid"),
-  courseList: document.querySelector("#courseList"),
-  searchInput: document.querySelector("#searchInput"),
-  codeFilter: document.querySelector("#codeFilter"),
-  languageFilter: document.querySelector("#languageFilter"),
-  conflictOnly: document.querySelector("#conflictOnly"),
-  totalCourses: document.querySelector("#totalCourses"),
-  totalMeetings: document.querySelector("#totalMeetings"),
-  totalConflicts: document.querySelector("#totalConflicts"),
-  resultInfo: document.querySelector("#resultInfo"),
-  btnPrint: document.querySelector("#btnPrint"),
-  btnClear: document.querySelector("#btnClear"),
-  modal: document.querySelector("#courseModal"),
-  closeModal: document.querySelector("#closeModal"),
-  modalContent: document.querySelector("#modalContent"),
+const DAY_MAP = {
+  "2a": "SEG",
+  "3a": "TER",
+  "4a": "QUA",
+  "5a": "QUI",
+  "6a": "SEX",
 };
 
-function timeToMinutes(value) {
-  const [hours, minutes] = value.split(":").map(Number);
-  return hours * 60 + minutes;
+const COURSES = RAW_COURSES.map((course) => ({
+  ...course,
+  id: `${course.code.toLowerCase()}-${course.className.toLowerCase()}-${course.number}`.replace(/[^a-z0-9-]/g, "-"),
+  meetings: parseMeetings(course.scheduleText),
+}));
+
+const state = {
+  search: "",
+  code: "all",
+  type: "all",
+  isolated: "all",
+  conflictOnly: false,
+};
+
+const elements = {
+  totalCourses: document.querySelector("#totalCourses"),
+  scheduledCourses: document.querySelector("#scheduledCourses"),
+  totalConflicts: document.querySelector("#totalConflicts"),
+  searchInput: document.querySelector("#searchInput"),
+  codeFilter: document.querySelector("#codeFilter"),
+  typeFilter: document.querySelector("#typeFilter"),
+  isolatedFilter: document.querySelector("#isolatedFilter"),
+  conflictOnly: document.querySelector("#conflictOnly"),
+  btnPrint: document.querySelector("#btnPrint"),
+  btnClear: document.querySelector("#btnClear"),
+  scheduleGrid: document.querySelector("#scheduleGrid"),
+  courseList: document.querySelector("#courseList"),
+  resultInfo: document.querySelector("#resultInfo"),
+  modal: document.querySelector("#courseModal"),
+  modalContent: document.querySelector("#modalContent"),
+  closeModal: document.querySelector("#closeModal"),
+};
+
+function parseMeetings(scheduleText) {
+  if (!scheduleText || !scheduleText.includes("-")) return [];
+
+  const [daysPart, hourPart] = scheduleText.split("-").map((part) => part.trim());
+  const [start, end] = hourPart.split("/").map((part) => part.trim());
+  if (!start || !end) return [];
+
+  const dayTokens = daysPart
+    .replace(/\s+e\s+/g, ",")
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  return dayTokens
+    .map((token) => DAY_MAP[token])
+    .filter(Boolean)
+    .map((day) => ({ day, start, end }));
 }
 
-function intervalsOverlap(aStart, aEnd, bStart, bEnd) {
-  return timeToMinutes(aStart) < timeToMinutes(bEnd) && timeToMinutes(aEnd) > timeToMinutes(bStart);
-}
+function setupFilters() {
+  [...new Set(COURSES.map((course) => course.code))]
+    .sort()
+    .forEach((code) => {
+      const option = document.createElement("option");
+      option.value = code;
+      option.textContent = code;
+      elements.codeFilter.appendChild(option);
+    });
 
-function normalize(value) {
-  return value
-    .toString()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-}
+  elements.searchInput.addEventListener("input", (event) => {
+    state.search = normalize(event.target.value);
+    render();
+  });
 
-function cssColorFor(course) {
-  const palette = ["#0e5b9f", "#12386b", "#287271", "#7b2cbf", "#8a4f17", "#2f855a", "#805ad5", "#2563eb"];
-  if (course.language === "Inglês") return "#aa1236";
-  let hash = 0;
-  for (const char of course.id) hash = char.charCodeAt(0) + ((hash << 5) - hash);
-  return palette[Math.abs(hash) % palette.length];
-}
+  elements.codeFilter.addEventListener("change", (event) => {
+    state.code = event.target.value;
+    render();
+  });
 
-function formatMeetings(course) {
-  return course.meetings.map((m) => `${m.day} ${m.start} - ${m.end}`).join(" · ");
-}
+  elements.typeFilter.addEventListener("change", (event) => {
+    state.type = event.target.value;
+    render();
+  });
 
-function uniqueCodes() {
-  return [...new Set(COURSES.map((course) => course.code))].sort();
-}
+  elements.isolatedFilter.addEventListener("change", (event) => {
+    state.isolated = event.target.value;
+    render();
+  });
 
-function populateFilters() {
-  uniqueCodes().forEach((code) => {
-    const option = document.createElement("option");
-    option.value = code;
-    option.textContent = code;
-    els.codeFilter.appendChild(option);
+  elements.conflictOnly.addEventListener("change", (event) => {
+    state.conflictOnly = event.target.checked;
+    render();
+  });
+
+  elements.btnPrint.addEventListener("click", () => window.print());
+  elements.btnClear.addEventListener("click", clearFilters);
+  elements.closeModal.addEventListener("click", () => elements.modal.close());
+  elements.modal.addEventListener("click", (event) => {
+    if (event.target === elements.modal) elements.modal.close();
   });
 }
 
-function getFilters() {
-  return {
-    query: normalize(els.searchInput.value.trim()),
-    code: els.codeFilter.value,
-    language: els.languageFilter.value,
-    conflictOnly: els.conflictOnly.checked,
-  };
+function normalize(value) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
 }
 
-function matchesFilters(course, filters) {
-  const haystack = normalize(`${course.name} ${course.code} ${course.className} ${course.activity} ${course.language}`);
-  const matchesQuery = !filters.query || haystack.includes(filters.query);
-  const matchesCode = filters.code === "all" || course.code === filters.code;
-  const matchesLanguage = filters.language === "all" || course.language === filters.language;
-  return matchesQuery && matchesCode && matchesLanguage;
+function getSearchBlob(course) {
+  return normalize([
+    course.number,
+    course.code,
+    course.name,
+    course.className,
+    course.type,
+    course.scheduleText,
+    course.teacher,
+    course.room,
+    course.startDate,
+    course.isolated,
+    course.language,
+  ].join(" "));
 }
 
-function visibleCourses() {
-  const filters = getFilters();
-  return COURSES.filter((course) => matchesFilters(course, filters));
+function getFilteredCourses() {
+  return COURSES.filter((course) => {
+    const matchesSearch = !state.search || getSearchBlob(course).includes(state.search);
+    const matchesCode = state.code === "all" || course.code === state.code;
+    const matchesType = state.type === "all" || course.type === state.type;
+    const matchesIsolated = state.isolated === "all" || course.isolated === state.isolated;
+    return matchesSearch && matchesCode && matchesType && matchesIsolated;
+  });
 }
 
-function coursesInSlot(courses, day, slot) {
-  return courses.filter((course) =>
-    course.meetings.some((meeting) => meeting.day === day && intervalsOverlap(meeting.start, meeting.end, slot.start, slot.end))
-  );
+function meetingKey(meeting) {
+  return `${meeting.day}|${meeting.start}|${meeting.end}`;
 }
 
-function meetingForSlot(course, day, slot) {
-  return course.meetings.find((meeting) => meeting.day === day && intervalsOverlap(meeting.start, meeting.end, slot.start, slot.end));
+function getConflictKeys(courses) {
+  const map = new Map();
+  courses.forEach((course) => {
+    course.meetings.forEach((meeting) => {
+      const key = meetingKey(meeting);
+      if (!map.has(key)) map.set(key, []);
+      map.get(key).push(course.id);
+    });
+  });
+
+  return new Set([...map.entries()].filter(([, ids]) => ids.length > 1).map(([key]) => key));
 }
 
-function countConflictSlots(courses) {
-  let total = 0;
-  for (const slot of DISPLAY_SLOTS) {
-    for (const day of DAYS) {
-      if (coursesInSlot(courses, day.key, slot).length > 1) total += 1;
-    }
-  }
-  return total;
+function coursesForCell(courses, day, slot, conflictKeys) {
+  return courses
+    .filter((course) => course.meetings.some((meeting) => (
+      meeting.day === day && meeting.start === slot.start && meeting.end === slot.end
+    )))
+    .filter((course) => !state.conflictOnly || course.meetings.some((meeting) => conflictKeys.has(meetingKey(meeting))))
+    .sort((a, b) => a.name.localeCompare(b.name, "pt-BR"));
 }
 
-function createCourseCard(course, options = {}) {
-  const card = document.createElement("button");
-  card.type = "button";
-  card.className = `course-card ${course.language === "Inglês" ? "is-english" : ""} ${options.isLong ? "is-long" : ""}`;
-  card.style.setProperty("--card-color", cssColorFor(course));
-  card.innerHTML = `
-    <span class="course-title">${course.name}</span>
-    <span class="course-subtitle">
-      <span class="tag">${course.code} · ${course.className}</span>
-      <span class="tag ${course.language === "Inglês" ? "tag--accent" : ""}">${course.language}</span>
-      ${options.conflict ? `<span class="tag tag--warn">conflito</span>` : ""}
-      ${options.isLong ? `<span class="tag">${options.meeting.start}-${options.meeting.end}</span>` : ""}
-    </span>
-  `;
-  card.addEventListener("click", () => openModal(course));
-  return card;
+function render() {
+  const filteredCourses = getFilteredCourses();
+  const conflictKeys = getConflictKeys(filteredCourses);
+  const visibleCourses = state.conflictOnly
+    ? filteredCourses.filter((course) => course.meetings.some((meeting) => conflictKeys.has(meetingKey(meeting))))
+    : filteredCourses;
+
+  elements.totalCourses.textContent = COURSES.length;
+  elements.scheduledCourses.textContent = COURSES.filter((course) => course.meetings.length > 0).length;
+  elements.totalConflicts.textContent = getConflictKeys(COURSES).size;
+  elements.resultInfo.textContent = `${visibleCourses.length} de ${COURSES.length} disciplinas`;
+
+  renderSchedule(filteredCourses, conflictKeys);
+  renderList(visibleCourses, conflictKeys);
 }
 
-function renderGrid() {
-  const courses = visibleCourses();
-  const filters = getFilters();
-  els.scheduleGrid.innerHTML = "";
+function renderSchedule(courses, conflictKeys) {
+  elements.scheduleGrid.innerHTML = "";
 
-  const headerTime = document.createElement("div");
-  headerTime.className = "grid-head";
-  headerTime.textContent = "Horário";
-  els.scheduleGrid.appendChild(headerTime);
+  const emptyTop = document.createElement("div");
+  emptyTop.className = "grid-cell grid-head";
+  emptyTop.textContent = "Horário";
+  elements.scheduleGrid.appendChild(emptyTop);
 
   DAYS.forEach((day) => {
-    const head = document.createElement("div");
-    head.className = "grid-head";
-    head.textContent = day.label;
-    els.scheduleGrid.appendChild(head);
+    const cell = document.createElement("div");
+    cell.className = "grid-cell grid-head";
+    cell.textContent = day.label;
+    elements.scheduleGrid.appendChild(cell);
   });
 
   DISPLAY_SLOTS.forEach((slot) => {
     const timeCell = document.createElement("div");
-    timeCell.className = "time-cell";
-    timeCell.textContent = `${slot.start} – ${slot.end}`;
-    els.scheduleGrid.appendChild(timeCell);
+    timeCell.className = "grid-cell grid-time";
+    timeCell.innerHTML = `<span>${slot.start}<br>${slot.end}</span>`;
+    elements.scheduleGrid.appendChild(timeCell);
 
     DAYS.forEach((day) => {
-      const slotCourses = coursesInSlot(courses, day.key, slot);
-      const hasConflict = slotCourses.length > 1;
-      const shouldHide = filters.conflictOnly && !hasConflict;
-
+      const key = `${day.key}|${slot.start}|${slot.end}`;
+      const items = coursesForCell(courses, day.key, slot, conflictKeys);
       const cell = document.createElement("div");
-      cell.className = `day-cell ${slotCourses.length === 0 || shouldHide ? "is-empty" : ""}`;
+      cell.className = `grid-cell ${conflictKeys.has(key) ? "cell-conflict" : ""}`;
 
-      if (shouldHide) {
-        cell.innerHTML = `<span class="empty-text">Sem conflito</span>`;
-      } else if (slotCourses.length === 0) {
-        cell.innerHTML = `<span class="empty-text">Livre</span>`;
+      if (items.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "cell-empty";
+        empty.textContent = "Livre";
+        cell.appendChild(empty);
       } else {
-        const meta = document.createElement("div");
-        meta.className = "cell-meta";
-        meta.innerHTML = hasConflict ? `<span class="conflict-badge">! ${slotCourses.length} disciplinas</span>` : "";
-        cell.appendChild(meta);
-
-        slotCourses.forEach((course) => {
-          const meeting = meetingForSlot(course, day.key, slot);
-          const isLong = meeting && (meeting.start !== slot.start || meeting.end !== slot.end);
-          cell.appendChild(createCourseCard(course, { conflict: hasConflict, isLong, meeting }));
-        });
+        items.forEach((course) => cell.appendChild(createCourseCard(course, conflictKeys.has(key))));
       }
-
-      els.scheduleGrid.appendChild(cell);
+      elements.scheduleGrid.appendChild(cell);
     });
   });
-
-  updateStats(courses);
 }
 
-function renderList() {
-  const courses = visibleCourses();
-  els.courseList.innerHTML = "";
+function createCourseCard(course, hasConflict = false) {
+  const button = document.createElement("button");
+  button.className = `course-card course-card--${course.type.toLowerCase()} ${hasConflict ? "course-card--conflict" : ""}`;
+  button.type = "button";
+  button.addEventListener("click", () => openModal(course));
+
+  button.innerHTML = `
+    <div class="course-card__top">
+      <span class="course-card__name">${escapeHtml(shortName(course.name))}</span>
+      <span class="badge ${hasConflict ? "badge--warning" : ""}">${hasConflict ? "!" : course.type}</span>
+    </div>
+    <div class="course-card__meta">
+      <strong>${escapeHtml(course.code)} · ${escapeHtml(course.className)}</strong><br>
+      ${escapeHtml(course.room || "Sala não informada")}<br>
+      ${escapeHtml(course.teacher || "Docente não informado")}
+    </div>
+  `;
+  return button;
+}
+
+function renderList(courses, conflictKeys) {
+  elements.courseList.innerHTML = "";
 
   if (courses.length === 0) {
-    els.courseList.innerHTML = `<div class="no-results">Nenhuma disciplina encontrada para os filtros selecionados.</div>`;
+    elements.courseList.innerHTML = `<div class="no-results">Nenhuma disciplina encontrada com os filtros atuais.</div>`;
     return;
   }
 
-  courses.forEach((course) => {
-    const row = document.createElement("button");
-    row.type = "button";
-    row.className = "course-row";
-    row.innerHTML = `
-      <h3>${course.name}</h3>
-      <p>${formatMeetings(course)}</p>
-      <span class="tag">${course.code} · ${course.className}</span>
-      <span class="tag">${course.vacancies} vagas</span>
-      <span class="tag ${course.language === "Inglês" ? "tag--accent" : ""}">${course.language}</span>
-    `;
-    row.addEventListener("click", () => openModal(course));
-    els.courseList.appendChild(row);
-  });
-}
-
-function updateStats(courses) {
-  const totalMeetings = courses.reduce((sum, course) => sum + course.meetings.length, 0);
-  const conflicts = countConflictSlots(courses);
-  els.totalCourses.textContent = courses.length;
-  els.totalMeetings.textContent = totalMeetings;
-  els.totalConflicts.textContent = conflicts;
-  els.resultInfo.textContent = `${courses.length} disciplina${courses.length === 1 ? "" : "s"} exibida${courses.length === 1 ? "" : "s"}`;
+  const fragment = document.createDocumentFragment();
+  courses
+    .slice()
+    .sort((a, b) => a.number - b.number)
+    .forEach((course) => {
+      const hasConflict = course.meetings.some((meeting) => conflictKeys.has(meetingKey(meeting)));
+      const item = document.createElement("button");
+      item.className = "list-item";
+      item.type = "button";
+      item.addEventListener("click", () => openModal(course));
+      item.innerHTML = `
+        <div class="list-item__title">
+          <h3>${escapeHtml(course.number)}. ${escapeHtml(course.name)}</h3>
+          <span class="badge ${hasConflict ? "badge--warning" : ""}">${hasConflict ? "conflito" : course.type}</span>
+        </div>
+        <div class="meta-grid">
+          <div><strong>Código / turma</strong>${escapeHtml(course.code)} · ${escapeHtml(course.className)}</div>
+          <div><strong>Horário</strong>${escapeHtml(course.scheduleText || "Não informado")}</div>
+          <div><strong>Docente</strong>${escapeHtml(course.teacher || "Não informado")}</div>
+          <div><strong>Sala</strong>${escapeHtml(course.room || "Não informada")}</div>
+        </div>
+      `;
+      fragment.appendChild(item);
+    });
+  elements.courseList.appendChild(fragment);
 }
 
 function openModal(course) {
-  els.modalContent.innerHTML = `
-    <div class="modal-content">
-      <div class="modal-hero">
-        <h2>${course.name}</h2>
-        <p>${course.activity}</p>
-      </div>
+  const isOb = course.type === "OB";
+  elements.modalContent.innerHTML = `
+    <div class="modal-head ${isOb ? "modal-head--ob" : ""}">
+      <span class="badge">${escapeHtml(course.code)} · ${escapeHtml(course.className)} · ${escapeHtml(course.type)}</span>
+      <h2>${escapeHtml(course.name)}</h2>
+      <p>${escapeHtml(course.scheduleText || "Horário não informado")}</p>
+    </div>
+    <div class="modal-body">
       <div class="detail-grid">
-        <div class="detail"><strong>Código</strong><span>${course.code}</span></div>
-        <div class="detail"><strong>Turma</strong><span>${course.className}</span></div>
-        <div class="detail"><strong>Tipo</strong><span>${course.type}</span></div>
-        <div class="detail"><strong>C.P.V.</strong><span>${course.cpv}</span></div>
-        <div class="detail"><strong>Vagas</strong><span>${course.vacancies}</span></div>
-        <div class="detail"><strong>Idioma</strong><span>${course.language}</span></div>
-        <div class="detail"><strong>Modalidade</strong><span>${course.modality}</span></div>
-        <div class="detail"><strong>Horários</strong><span>${formatMeetings(course)}</span></div>
+        <div class="detail"><span>Docente</span><strong>${escapeHtml(course.teacher || "Não informado")}</strong></div>
+        <div class="detail"><span>Sala</span><strong>${escapeHtml(course.room || "Não informada")}</strong></div>
+        <div class="detail"><span>Início das aulas</span><strong>${escapeHtml(course.startDate || "Não informado")}</strong></div>
+        <div class="detail"><span>Carga horária / créditos</span><strong>${course.workload}h · ${course.credits} crédito(s)</strong></div>
+        <div class="detail"><span>Disciplina isolada</span><strong>${escapeHtml(course.isolated || "Não informado")}</strong></div>
+        <div class="detail"><span>Disciplina eletiva</span><strong>${escapeHtml(course.elective || "Não informado")}</strong></div>
+        <div class="detail"><span>Plano de curso</span><strong>${escapeHtml(course.plan || "Não informado")}</strong></div>
+        <div class="detail"><span>Idioma</span><strong>${escapeHtml(course.language || "Não informado")}</strong></div>
       </div>
     </div>
   `;
-  if (typeof els.modal.showModal === "function") {
-    els.modal.showModal();
+
+  if (typeof elements.modal.showModal === "function") {
+    elements.modal.showModal();
+  } else {
+    alert(`${course.name}\n${course.scheduleText || "Horário não informado"}`);
   }
 }
 
-function closeModal() {
-  if (els.modal.open) els.modal.close();
+function shortName(name) {
+  return name
+    .replace(/^TECC:\s*/i, "")
+    .replace(/^TES:\s*/i, "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function clearFilters() {
-  els.searchInput.value = "";
-  els.codeFilter.value = "all";
-  els.languageFilter.value = "all";
-  els.conflictOnly.checked = false;
+  state.search = "";
+  state.code = "all";
+  state.type = "all";
+  state.isolated = "all";
+  state.conflictOnly = false;
+
+  elements.searchInput.value = "";
+  elements.codeFilter.value = "all";
+  elements.typeFilter.value = "all";
+  elements.isolatedFilter.value = "all";
+  elements.conflictOnly.checked = false;
   render();
 }
 
-function render() {
-  renderGrid();
-  renderList();
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
-function bindEvents() {
-  [els.searchInput, els.codeFilter, els.languageFilter, els.conflictOnly].forEach((element) => {
-    element.addEventListener("input", render);
-    element.addEventListener("change", render);
-  });
-  els.btnPrint.addEventListener("click", () => window.print());
-  els.btnClear.addEventListener("click", clearFilters);
-  els.closeModal.addEventListener("click", closeModal);
-  els.modal.addEventListener("click", (event) => {
-    if (event.target === els.modal) closeModal();
-  });
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeModal();
-  });
-}
-
-populateFilters();
-bindEvents();
+setupFilters();
 render();

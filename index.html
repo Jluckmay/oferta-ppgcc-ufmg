@@ -3,41 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grade de Horários — DCC/UFMG 2026/2</title>
+  <title>Grade de Horários — PPGCC/UFMG 2026/2</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header class="hero">
     <div class="hero__content">
-      <p class="eyebrow">UFMG · Pós-Graduação · ICEx / Ciência da Computação - PPGCC</p>
+      <p class="eyebrow">UFMG · PPGCC · Oferta 2026/2</p>
       <h1>Grade de Horários 2026/2</h1>
-      <p class="subtitle">Visualização interativa das ofertas de disciplinas do semestre, organizada por dia e horário.</p>
+      <p class="subtitle">Visualização interativa da oferta atualizada de disciplinas do PPGCC, organizada por dia, horário, sala e docente.</p>
       <div class="hero__actions">
         <button id="btnPrint" class="btn btn--light" type="button">Imprimir / salvar PDF</button>
         <button id="btnClear" class="btn btn--ghost" type="button">Limpar filtros</button>
       </div>
     </div>
-    <div class="hero__panel" aria-label="Resumo da oferta">
+
+    <aside class="hero__panel" aria-label="Resumo da oferta">
       <div>
         <strong id="totalCourses">0</strong>
         <span>disciplinas</span>
       </div>
       <div>
-        <strong id="totalMeetings">0</strong>
-        <span>encontros semanais</span>
+        <strong id="scheduledCourses">0</strong>
+        <span>com horário</span>
       </div>
       <div>
         <strong id="totalConflicts">0</strong>
         <span>horários com conflito</span>
       </div>
-    </div>
+    </aside>
   </header>
 
   <main class="page">
+    <section class="notice" aria-label="Informações da fonte">
+      <strong>Fonte atualizada:</strong> Oferta disciplinas PPGCC 2026-2, versão <em>Oferta PPGCC 20262_v3.xlsx</em>, datada de 31/07/2026. A oferta e a alocação foram aprovadas pela Câmara do DCC e homologadas pelo Colegiado do PPGCC em 03/07/2026.
+    </section>
+
     <section class="toolbar" aria-label="Filtros da grade">
       <label class="search">
-        <span>Buscar disciplina, código ou turma</span>
-        <input id="searchInput" type="search" placeholder="Ex.: Cibersegurança, DCC831, PG9..." autocomplete="off" />
+        <span>Buscar disciplina, código, turma, docente ou sala</span>
+        <input id="searchInput" type="search" placeholder="Ex.: Robótica, DCC831, PG9, A312..." autocomplete="off" />
       </label>
 
       <label>
@@ -48,32 +53,41 @@
       </label>
 
       <label>
-        <span>Idioma</span>
-        <select id="languageFilter">
+        <span>Tipo</span>
+        <select id="typeFilter">
           <option value="all">Todos</option>
-          <option value="Português">Português</option>
-          <option value="Inglês">Inglês</option>
+          <option value="OP">Optativas</option>
+          <option value="OB">Obrigatórias</option>
+        </select>
+      </label>
+
+      <label>
+        <span>Disciplina isolada</span>
+        <select id="isolatedFilter">
+          <option value="all">Todas</option>
+          <option value="SIM">Aceita</option>
+          <option value="NÃO">Não aceita</option>
         </select>
       </label>
 
       <label class="toggle">
         <input id="conflictOnly" type="checkbox" />
-        <span>Mostrar apenas horários com mais de uma disciplina</span>
+        <span>Mostrar apenas horários com conflito</span>
       </label>
     </section>
 
     <section class="legend" aria-label="Legenda">
-      <span><i class="dot dot--pt"></i> Português</span>
-      <span><i class="dot dot--en"></i> Inglês</span>
+      <span><i class="dot dot--op"></i> Optativa</span>
+      <span><i class="dot dot--ob"></i> Obrigatória</span>
       <span><i class="pill-small">!</i> Conflito de horário</span>
-      <span><i class="pill-small pill-small--long">↔</i> Aula ocupa mais de um bloco</span>
+      <span><i class="pill-small pill-small--muted">—</i> Sem horário informado</span>
     </section>
 
     <section class="schedule-card">
-      <div class="schedule-header">
+      <div class="section-header">
         <div>
           <h2>Grade semanal</h2>
-          <p>Os blocos longos são repetidos nos horários que eles atravessam para facilitar a visualização de conflitos.</p>
+          <p>Os cards exibem disciplina, turma, sala e docente. Clique em um card para ver os detalhes completos.</p>
         </div>
         <span id="resultInfo" class="result-info"></span>
       </div>
@@ -81,10 +95,10 @@
     </section>
 
     <section class="list-card">
-      <div class="schedule-header">
+      <div class="section-header">
         <div>
           <h2>Lista de disciplinas</h2>
-          <p>Clique em uma disciplina para ver detalhes de dias, horários, vagas, idioma e turma.</p>
+          <p>Inclui carga horária, créditos, tipo, docente, sala, início das aulas e possibilidade de disciplina isolada.</p>
         </div>
       </div>
       <div id="courseList" class="course-list"></div>
@@ -97,7 +111,7 @@
   </dialog>
 
   <footer class="footer">
-    <p>Fonte: Relação de Oferta de Turmas em 2026/2 — Sistema Acadêmico da Pós-Graduação/UFMG.</p>
+    <p>Projeto estático em HTML, CSS e JavaScript. Dados organizados a partir da oferta atualizada do PPGCC 2026/2.</p>
   </footer>
 
   <script src="script.js"></script>
