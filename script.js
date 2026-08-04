@@ -47,7 +47,7 @@ const TRANSLATIONS = {
     select: "Selecionar",
     selected: "Selecionada",
     details: "Detalhes",
-    addToGoogleCalendar: "Adicionar ao Google Agenda",
+    addToGoogleCalendar: "Selecione disciplinas na grade ou na lista e use o botão de agenda para exportar um arquivo .ics com os eventos recorrentes do semestre inteiro.",
     googleCalendar: "Google Agenda",
     conflictTitle: "Atenção",
     conflictMessage: "Há disciplinas com horários conflitantes na seleção.",
@@ -105,7 +105,7 @@ const TRANSLATIONS = {
     select: "Select",
     selected: "Selected",
     details: "Details",
-    addToGoogleCalendar: "Add to Google Calendar",
+    addToGoogleCalendar: "Select courses in the schedule or list and use the calendar button to export an .ics file with recurring events for the entire semester.",
     googleCalendar: "Google Calendar",
     conflictTitle: "Attention",
     conflictMessage: "There are courses with conflicting schedules in the selection.",
@@ -607,7 +607,7 @@ function applyStaticTranslations() {
   if (resultInfoLabel) resultInfoLabel.textContent = locale.disciplines;
 
   if (calendarNote) {
-    calendarNote.innerHTML = `<strong>${locale.googleCalendar}:</strong> ${locale.addToGoogleCalendar}...`;
+    calendarNote.innerHTML = `<strong>${locale.googleCalendar}:</strong> ${locale.addToGoogleCalendar}`;
     calendarNote.setAttribute("aria-label", `${locale.googleCalendar}: ${locale.addToGoogleCalendar}`);
   }
 }
