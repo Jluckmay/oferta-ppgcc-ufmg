@@ -7,19 +7,20 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
   <div id="app"></div>
 
   <!-- Hero Section -->
-  <header class="hero">
+  <header class="hero" role="banner">
     <div class="hero__content">
       <p class="eyebrow">UFMG · PPGCC · Oferta <span id="semesterDisplay">2026-2</span></p>
       <h1>Grade de Horários <span id="semesterTitle">2026-2</span></h1>
       <p class="subtitle">Visualização interativa da oferta atualizada de disciplinas do PPGCC</p>
       <div class="hero__actions">
-        <button class="btn btn--light" onclick="window.print()">
+        <button class="btn btn--light" onclick="window.print()" aria-label="Imprimir ou salvar a grade em PDF">
           Imprimir / salvar PDF
         </button>
-        <button class="btn btn--ghost" onclick="clearFilters()">
+        <button class="btn btn--ghost" onclick="clearFilters()" aria-label="Limpar filtros aplicados">
           Limpar filtros
         </button>
       </div>
@@ -41,65 +42,71 @@
   </header>
 
   <!-- Main Content -->
-  <main class="page">
+  <main id="main-content" class="page" tabindex="-1">
     <!-- Toolbar -->
-    <section class="toolbar">
+    <section class="toolbar" aria-label="Ferramentas de busca e filtros">
       <div class="toolbar__search">
+        <label for="searchInput" class="sr-only">Buscar disciplinas</label>
         <input
           type="search"
           id="searchInput"
           placeholder="Buscar disciplina, código, turma, docente ou sala"
           class="search-input"
+          aria-describedby="searchHelp"
           oninput="applyFilters()"
         />
-        <small style="display:block; margin-top:0.4rem; color: var(--text-muted, #6b7280);">
+        <small id="searchHelp" style="display:block; margin-top:0.4rem; color: var(--text-muted, #6b7280);">
           Busca múltipla: use ponto e vírgula para separar vários termos, por exemplo <strong>DCC001; DCC002</strong>.
         </small>
       </div>
 
       <div class="toolbar__filters">
-        <select id="codeFilter" class="filter-select" onchange="applyFilters()">
+        <label for="codeFilter" class="sr-only">Filtrar por código</label>
+        <select id="codeFilter" class="filter-select" onchange="applyFilters()" aria-label="Filtrar por código">
           <option value="all">Código</option>
         </select>
 
-        <select id="typeFilter" class="filter-select" onchange="applyFilters()">
+        <label for="typeFilter" class="sr-only">Filtrar por tipo</label>
+        <select id="typeFilter" class="filter-select" onchange="applyFilters()" aria-label="Filtrar por tipo">
           <option value="all">Tipo</option>
           <option value="OP">Optativas</option>
           <option value="OB">Obrigatórias</option>
         </select>
 
-        <select id="isolatedFilter" class="filter-select" onchange="applyFilters()">
+        <label for="isolatedFilter" class="sr-only">Filtrar por disciplina isolada</label>
+        <select id="isolatedFilter" class="filter-select" onchange="applyFilters()" aria-label="Filtrar por disciplina isolada">
           <option value="all">Disciplina isolada</option>
           <option value="SIM">Sim</option>
           <option value="NÃO">Não</option>
         </select>
 
-        <select id="semesterFilter" class="filter-select" onchange="loadSemesterData(this.value)">
+        <label for="semesterFilter" class="sr-only">Selecionar semestre</label>
+        <select id="semesterFilter" class="filter-select" onchange="loadSemesterData(this.value)" aria-label="Selecionar semestre">
           <option value="">Semestre</option>
         </select>
       </div>
 
-      <div class="toolbar__actions">
-        <button class="toolbar-btn" onclick="exportAsJSON()" title="Baixar como JSON">
+      <div class="toolbar__actions" aria-label="Ações da página">
+        <button class="toolbar-btn" onclick="exportAsJSON()" title="Baixar como JSON" aria-label="Exportar lista em JSON">
           ⬇️ JSON
         </button>
-        <button class="toolbar-btn" onclick="exportAsImage()" title="Baixar como Imagem">
+        <button class="toolbar-btn" onclick="exportAsImage()" title="Baixar como Imagem" aria-label="Exportar grade como imagem">
           ⬇️ Imagem
         </button>
-        <button class="toolbar-btn" onclick="importJSON()" title="Importar JSON">
+        <button class="toolbar-btn" onclick="importJSON()" title="Importar JSON" aria-label="Importar lista em JSON">
           ⬆️ JSON
         </button>
-        <button class="toolbar-btn" onclick="toggleLanguage()" title="Alternar idioma">
+        <button class="toolbar-btn" onclick="toggleLanguage()" title="Alternar idioma" aria-label="Alternar idioma">
           🌐 <span id="langDisplay">PT</span>
         </button>
-        <button class="toolbar-btn" onclick="toggleTheme()" title="Alternar tema">
+        <button class="toolbar-btn" onclick="toggleTheme()" title="Alternar tema" aria-label="Alternar tema">
           <span id="themeIcon">🌙</span>
         </button>
       </div>
     </section>
 
     <!-- Result Info -->
-    <section class="result-info">
+    <section class="result-info" role="status" aria-live="polite">
       <span id="resultCount">0</span> de <span id="totalCount">0</span> disciplinas
     </section>
 
@@ -123,12 +130,12 @@
   </main>
 
   <!-- Modal -->
-  <div id="modal" class="modal" style="display: none;">
+  <div id="modal" class="modal" style="display: none;" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-overlay" onclick="closeModal()"></div>
     <div class="modal-content">
       <div class="modal-header">
         <h2 id="modalTitle"></h2>
-        <button class="modal-close" onclick="closeModal()">✕</button>
+        <button class="modal-close" onclick="closeModal()" aria-label="Fechar detalhes da disciplina">✕</button>
       </div>
       <div class="modal-body" id="modalBody"></div>
     </div>

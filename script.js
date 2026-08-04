@@ -366,6 +366,7 @@ function openModal(course) {
   const modalTitle = document.getElementById("modalTitle");
   const modalBody = document.getElementById("modalBody");
 
+  modal.setAttribute("aria-hidden", "false");
   modalTitle.textContent = course.name;
   modalBody.innerHTML = `
     <div class="detail-grid">
@@ -404,7 +405,9 @@ function openModal(course) {
 }
 
 function closeModal() {
-  document.getElementById("modal").style.display = "none";
+  const modal = document.getElementById("modal");
+  modal.style.display = "none";
+  modal.setAttribute("aria-hidden", "true");
 }
 
 // Export Functions
