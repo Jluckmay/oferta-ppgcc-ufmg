@@ -1,34 +1,37 @@
-# Grade de Horários — Oferta de Disciplinas PPGCC 2026/2
+# Grade de Horários — Oferta de Disciplinas PPGCC
 
-Este repositório contém uma página web estática, desenvolvida em **HTML, CSS e JavaScript**, para visualizar a oferta de disciplinas do **PPGCC/UFMG no semestre 2026/2** em formato de grade semanal de horários.
+Este repositório contém uma página web estática desenvolvida em HTML, CSS e JavaScript para visualizar a oferta de disciplinas do PPGCC/UFMG em formato de grade semanal de horários.
 
-A proposta é facilitar a consulta das disciplinas ofertadas, permitindo ver rapidamente quais turmas acontecem em cada dia e horário, quais salas estão indicadas e quem são os docentes responsáveis.
+A interface permite consultar rapidamente disciplinas, turmas, salas, docentes, tipos de oferta, disciplina isolada e demais detalhes em uma visualização simples e interativa.
 
-## Sobre a atualização
+Acesso público: https://ricardo.bib.br/horario_ia_20262/
 
-Esta versão foi atualizada com base no arquivo **Oferta PPGCC 20262_v3**, datado de **31/07/2026**.
+## Objetivo
 
-Os dados foram organizados com apoio de **Inteligência Artificial**, a partir do carregamento dos dados disponíveis no sistema/documento de oferta de disciplinas. A IA foi utilizada para estruturar as informações da tabela original em um formato navegável, visual e interativo.
+O projeto foi pensado como uma ferramenta auxiliar de consulta para a oferta acadêmica, mantendo a navegação em um único arquivo estático e permitindo expansão por semestre via arquivos JSON independentes.
 
 ## Funcionalidades
 
 - Grade semanal por dia e horário;
-- Visualização de disciplina, código, turma, sala e docente;
 - Lista completa das disciplinas ofertadas;
-- Filtro por busca textual;
-- Filtro por código da disciplina;
-- Filtro por tipo de disciplina, obrigatória ou optativa;
-- Filtro por possibilidade de matrícula como disciplina isolada;
+- Busca textual por disciplina, código, turma, docente ou sala;
+- Busca de múltiplas disciplinas separadas por ponto e vírgula (`;`), com resultado combinado por OR;
+- Seleção de semestre por meio do filtro `Semestre`;
+- Filtros por código, tipo e disciplina isolada;
 - Modal com detalhes completos da disciplina;
-- Botão para imprimir ou salvar a grade em PDF pelo navegador;
-- Página totalmente estática, sem necessidade de backend.
+- Exportação em JSON da oferta filtrada;
+- Exportação em imagem da grade utilizando html2canvas;
+- Importação de JSON local para uso direto pelo navegador;
+- Suporte a múltiplos semestres através de arquivos JSON separados;
+- Deploy estático no GitHub Pages com manifesto de semestres.
 
 ## Tecnologias utilizadas
 
 - HTML5
 - CSS3
-- JavaScript
-- Inteligência Artificial para apoio na estruturação dos dados e geração da interface
+- JavaScript vanilla
+- html2canvas para exportação de imagem
+- GitHub Actions para geração automática do manifesto de semestres e deploy no GitHub Pages
 
 ## Estrutura do projeto
 
@@ -37,30 +40,62 @@ Os dados foram organizados com apoio de **Inteligência Artificial**, a partir d
 ├── index.html
 ├── style.css
 ├── script.js
+├── semester-data.js
+├── semesters/
+│   ├── manifest.json
+│   └── 2026-2.json
+├── .github/
+│   └── workflows/
+│       └── pages.yml
 └── README.md
 ```
 
-## Fonte dos dados
+## Modelo de dados por semestre
 
-Os dados utilizados foram extraídos do documento de oferta de disciplinas do **PPGCC/UFMG 2026/2**, versão **Oferta PPGCC 20262_v3**, gerado a partir dos dados disponíveis no sistema.
+A pasta `semesters/` contém um arquivo JSON por semestre. Cada arquivo representa a oferta de um período específico, por exemplo `2026-2.json`.
 
-A oferta e a alocação foram aprovadas pela Câmara do DCC em 03/07/2026 e homologadas pelo Colegiado do PPGCC em 03/07/2026, conforme indicado no próprio documento de oferta.
+Além disso, existe um `manifest.json` que lista os arquivos disponíveis. Esse manifesto é usado pelo navegador para montar o seletor de semestres e para o deploy automático do GitHub Pages.
+
+## Seleção de semestre
+
+A seleção de semestre é feita pelo campo `Semestre` no filtro da toolbar. O valor escolhido carrega o arquivo correspondente em `semesters/` e atualiza a grade, a lista e os filtros para o período selecionado.
+
+## Busca de múltiplas disciplinas
+
+A busca aceita múltiplos termos separados por ponto e vírgula (`;`).
+
+Exemplo:
+
+```txt
+DCC001; DCC002
+```
+
+Nesse caso, a busca retorna disciplinas que correspondam a qualquer um dos termos informados.
+
+## Fluxo de uso
+
+1. Adicione um novo arquivo JSON em `semesters/`.
+2. Atualize o `manifest.json` com o nome desse arquivo, ou deixe o workflow do GitHub Actions gerar o manifesto automaticamente.
+3. Abra o site e escolha o semestre desejado no seletor.
+4. Use os filtros e as ações de exportação/importação conforme necessário.
+
+## Deploy no GitHub Pages
+
+O workflow em `.github/workflows/pages.yml` gera o `manifest.json` automaticamente com base nos arquivos `.json` da pasta `semesters/` e publica o site em GitHub Pages.
+
+Isso permite que novos semestres sejam adicionados apenas pela criação do arquivo correspondente no projeto e pelo envio para o repositório.
+
+## Observações
+
+- O projeto foi desenhado para funcionamento como site estático, sem backend.
+- O arquivo `semester-data.js` serve como fallback local para carregamento direto no navegador em modo `file://`.
+- Em deploy real via GitHub Pages, o caminho principal de leitura é o `manifest.json` + arquivos JSON em `semesters/`.
 
 ## Aviso importante
 
-Este projeto **não é um sistema oficial da UFMG**.
+Este projeto não é um sistema oficial da UFMG. Ele foi criado como uma ferramenta auxiliar para consulta e visualização da oferta acadêmica.
 
-Ele foi criado como uma ferramenta auxiliar de visualização, com o objetivo de tornar a consulta da oferta de disciplinas mais simples e agradável.
-
-Como os dados foram estruturados com apoio de IA a partir do documento disponível, recomenda-se conferir o sistema oficial da universidade antes de tomar decisões acadêmicas ou administrativas.
-
-## Possíveis melhorias futuras
-
-- Permitir selecionar disciplinas e montar uma grade personalizada;
-- Exportar a grade personalizada em PDF;
-- Adicionar modo escuro;
-- Importar automaticamente novas versões da oferta;
-- Adicionar link direto para planos de curso quando disponíveis.
+A validação final das informações acadêmicas deve sempre ser conferida no sistema oficial da universidade.
 
 ## Licença
 
