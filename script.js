@@ -159,6 +159,31 @@ function parseMeetings(scheduleText) {
     .map((day) => ({ day, start, end }));
 }
 
+function parseSemesterIdentifier(value) {
+  const cleaned = String(value ?? "").replace(/\.json$/i, "");
+  const [year, term] = cleaned.split("-").map((part) => Number(part));
+  return {
+    year: Number.isFinite(year) ? year : 0,
+    term: Number.isFinite(term) ? term : 0,
+  };
+}
+
+function getMostRecentSemester(semesterFiles) {
+  if (!semesterFiles.length) return "";
+
+  const ranked = semesterFiles
+    .map((semester) => ({
+      filename: String(semester),
+      ...parseSemesterIdentifier(semester),
+    }))
+    .sort((a, b) => {
+      if (a.year !== b.year) return b.year - a.year;
+      return b.term - a.term;
+    });
+
+  return ranked[0]?.filename || "";
+}
+
 function getSearchBlob(course) {
   return normalize([
     course.number,
@@ -493,16 +518,26 @@ async function loadSemesters() {
     semesterFiles = Object.keys(SEMESTER_DATA || {});
   }
 
+  const latestSemester = getMostRecentSemester(semesterFiles);
   state.semesters = semesterFiles;
-  semesterFiles.forEach((sem) => {
-    const option = document.createElement("option");
-    option.value = sem;
-    option.textContent = sem.replace(".json", "").replace("-", "/");
-    semesterSelect.appendChild(option);
-  });
+
+  semesterFiles
+    .slice()
+    .sort((a, b) => {
+      const aInfo = parseSemesterIdentifier(a);
+      const bInfo = parseSemesterIdentifier(b);
+      if (aInfo.year !== bInfo.year) return bInfo.year - aInfo.year;
+      return bInfo.term - aInfo.term;
+    })
+    .forEach((sem) => {
+      const option = document.createElement("option");
+      option.value = sem;
+      option.textContent = sem.replace(".json", "").replace("-", "/");
+      semesterSelect.appendChild(option);
+    });
 
   if (semesterFiles.length > 0) {
-    await loadSemesterData(semesterFiles[0]);
+    await loadSemesterData(latestSemester || semesterFiles[0]);
   }
 }
 
