@@ -23,14 +23,37 @@ const DAY_MAP = {
   "6a": "SEX",
 };
 
+const HOLIDAYS = [
+  "2026-08-15", // Assunção de Nossa Senhora (Feriado Municipal - BH)
+  "2026-09-07", // Independência do Brasil
+  "2026-10-12", // Nossa Senhora Aparecida
+  "2026-11-02", // Finados
+  "2026-11-15", // Proclamação da República
+  "2026-11-20", // Dia Nacional de Zumbi e da Consciência Negra
+  "2026-12-08"  // Imaculada Conceição (Feriado Municipal - BH)
+];
+
 const TRANSLATIONS = {
   pt: {
     title: "Grade de Horários",
     subtitle: "Visualização interativa da oferta atualizada de disciplinas do PPGCC",
     disciplines: "disciplinas",
+    resultSummary: "de",
     scheduled: "com horário",
     rooms: "salas informadas",
     search: "Buscar disciplina, código, turma, docente ou sala",
+    searchHelp: "Busca múltipla: use ponto e vírgula para separar vários termos, por exemplo <strong>DCC001; DCC002</strong>.",
+    searchHelpTitle: "Busca múltipla",
+    select: "Selecionar",
+    selected: "Selecionada",
+    details: "Detalhes",
+    addToGoogleCalendar: "Adicionar ao Google Agenda",
+    googleCalendar: "Google Agenda",
+    conflictTitle: "Atenção",
+    conflictMessage: "Há disciplinas com horários conflitantes na seleção.",
+    conflictHelp: "Você não conseguirá adicionar ambas no mesmo horário no Google Agenda.",
+    ok: "OK",
+    close: "Fechar",
     code: "Código",
     type: "Tipo",
     isolated: "Disciplina isolada",
@@ -50,6 +73,12 @@ const TRANSLATIONS = {
     scheduleDesc: "Os cards exibem disciplina, turma, sala e docente. Clique em um card para ver os detalhes completos.",
     list: "Lista de disciplinas",
     listDesc: "Inclui carga horária, créditos, tipo, docente, sala, início das aulas e possibilidade de disciplina isolada.",
+    scheduleMissingTitle: "Horário não informado",
+    scheduleMissingMessage: "A disciplina não possui horário informado para criar um evento no Google Agenda.",
+    selectionMissingTitle: "Seleção necessária",
+    selectionMissingMessage: "Selecione pelo menos uma disciplina para abrir no Google Agenda.",
+    selectionConflictTitle: "Conflito de horários",
+    selectionConflictMessage: "Há disciplinas com horários conflitantes na seleção.",
     free: "Livre",
     code_label: "Código / turma",
     schedule_label: "Horário",
@@ -67,9 +96,22 @@ const TRANSLATIONS = {
     title: "Schedule",
     subtitle: "Interactive view of the updated PPGCC course offerings",
     disciplines: "courses",
+    resultSummary: "of",
     scheduled: "with schedule",
     rooms: "rooms informed",
     search: "Search course, code, class, teacher or room",
+    searchHelp: "Multiple search: use a semicolon to separate multiple terms, for example <strong>DCC001; DCC002</strong>.",
+    searchHelpTitle: "Multiple search",
+    select: "Select",
+    selected: "Selected",
+    details: "Details",
+    addToGoogleCalendar: "Add to Google Calendar",
+    googleCalendar: "Google Calendar",
+    conflictTitle: "Attention",
+    conflictMessage: "There are courses with conflicting schedules in the selection.",
+    conflictHelp: "You won't be able to add both in the same time slot on Google Calendar.",
+    ok: "OK",
+    close: "Close",
     code: "Code",
     type: "Type",
     isolated: "Isolated course",
@@ -89,6 +131,12 @@ const TRANSLATIONS = {
     scheduleDesc: "Cards display course, class, room and teacher. Click on a card to see full details.",
     list: "Course list",
     listDesc: "Includes workload, credits, type, teacher, room, start date and isolated course option.",
+    scheduleMissingTitle: "Schedule missing",
+    scheduleMissingMessage: "The course does not have a schedule to create a Google Calendar event.",
+    selectionMissingTitle: "Selection required",
+    selectionMissingMessage: "Select at least one course to open in Google Calendar.",
+    selectionConflictTitle: "Schedule conflict",
+    selectionConflictMessage: "There are courses with conflicting schedules in the selection.",
     free: "Free",
     code_label: "Code / class",
     schedule_label: "Schedule",
@@ -116,6 +164,7 @@ let state = {
   selectedType: "all",
   selectedIsolated: "all",
   selectedCourse: null,
+  selectedCourseIds: [],
 };
 
 // Utility Functions
@@ -159,6 +208,12 @@ function parseMeetings(scheduleText) {
     .map((day) => ({ day, start, end }));
 }
 
+function parseClockToMinutes(timeText) {
+  if (!timeText) return 0;
+  const [hours, minutes] = String(timeText).split(":").map(Number);
+  return (Number.isFinite(hours) ? hours : 0) * 60 + (Number.isFinite(minutes) ? minutes : 0);
+}
+
 function parseSemesterIdentifier(value) {
   const cleaned = String(value ?? "").replace(/\.json$/i, "");
   const [year, term] = cleaned.split("-").map((part) => Number(part));
@@ -200,16 +255,65 @@ function getSearchBlob(course) {
   ].join(" "));
 }
 
+function isCourseSelected(course) {
+  return state.selectedCourseIds.includes(course.id);
+}
+
+function toggleCourseSelection(course, event) {
+  if (!course?.id) return;
+  event?.stopPropagation?.();
+
+  const modal = document.getElementById("modal");
+  const modalWasOpen = modal && modal.style.display !== "none";
+  const id = course.id;
+  const hasSelection = state.selectedCourseIds.includes(id);
+  state.selectedCourseIds = hasSelection
+    ? state.selectedCourseIds.filter((selectedId) => selectedId !== id)
+    : [...state.selectedCourseIds, id];
+
+  const conflicts = getSelectedCourseConflicts();
+  if (conflicts.length > 0) {
+    showConflictNotification(conflicts);
+  }
+
+  renderUI();
+  if (modalWasOpen && state.selectedCourse) {
+    openModal(state.selectedCourse);
+  }
+}
+
+function getSelectedCourses() {
+  return state.courses.filter((course) => isCourseSelected(course));
+}
+
+function getCourseNumberValue(course) {
+  const numeric = Number.parseInt(String(course.number ?? "0").match(/\d+/)?.[0] ?? "0", 10);
+  return Number.isFinite(numeric) ? numeric : 0;
+}
+
 function getFilteredCourses() {
-  return state.courses.filter((course) => {
-    const searchBlob = getSearchBlob(course);
-    const terms = state.searchTerms.split(";").map((t) => normalize(t)).filter(Boolean);
-    const matchesSearch = terms.length === 0 || terms.some((term) => searchBlob.includes(term));
-    const matchesCode = state.selectedCode === "all" || course.code === state.selectedCode;
-    const matchesType = state.selectedType === "all" || course.type === state.selectedType;
-    const matchesIsolated = state.selectedIsolated === "all" || course.isolated === state.selectedIsolated;
-    return matchesSearch && matchesCode && matchesType && matchesIsolated;
-  });
+  const selectedIds = new Set(state.selectedCourseIds);
+
+  return state.courses
+    .filter((course) => {
+      const searchBlob = getSearchBlob(course);
+      const terms = state.searchTerms.split(";").map((t) => normalize(t)).filter(Boolean);
+      const matchesSearch = terms.length === 0 || terms.some((term) => searchBlob.includes(term));
+      const matchesCode = state.selectedCode === "all" || course.code === state.selectedCode;
+      const matchesType = state.selectedType === "all" || course.type === state.selectedType;
+      const matchesIsolated = state.selectedIsolated === "all" || course.isolated === state.selectedIsolated;
+      return matchesSearch && matchesCode && matchesType && matchesIsolated;
+    })
+    .sort((a, b) => {
+      const aSelected = selectedIds.has(a.id) ? 1 : 0;
+      const bSelected = selectedIds.has(b.id) ? 1 : 0;
+      if (aSelected !== bSelected) return bSelected - aSelected;
+
+      const numberDiff = getCourseNumberValue(a) - getCourseNumberValue(b);
+      if (numberDiff !== 0) return numberDiff;
+
+      return a.name.localeCompare(b.name, "pt-BR");
+    });
 }
 
 function coursesForCell(coursesArray, day, slot) {
@@ -237,6 +341,7 @@ function updateTheme() {
 function updateLanguage() {
   document.getElementById("langDisplay").textContent = state.language.toUpperCase();
   localStorage.setItem("language", state.language);
+  applyStaticTranslations();
   renderUI();
 }
 
@@ -273,18 +378,32 @@ function applyFilters() {
 function updateStats() {
   const filteredCourses = getFilteredCourses();
   const uniqueRooms = new Set(state.courses.map((course) => course.room).filter(Boolean));
-  
+  const selectedCourses = getSelectedCourses();
+
   document.getElementById("totalCourses").textContent = state.courses.length;
   document.getElementById("scheduledCourses").textContent = state.courses.filter((c) => c.meetings && c.meetings.length > 0).length;
   document.getElementById("totalRooms").textContent = uniqueRooms.size;
   document.getElementById("resultCount").textContent = filteredCourses.length;
   document.getElementById("totalCount").textContent = state.courses.length;
+
+  const googleAgendaButton = document.getElementById("googleAgendaBtn");
+  if (googleAgendaButton) {
+    const selectedCount = selectedCourses.length;
+    googleAgendaButton.innerHTML = selectedCount > 0
+      ? `📅 ${t().googleCalendar} (${selectedCount})`
+      : `📅 ${t().googleCalendar}`;
+    googleAgendaButton.disabled = selectedCount === 0;
+    googleAgendaButton.style.opacity = selectedCount === 0 ? "0.6" : "1";
+    googleAgendaButton.style.cursor = selectedCount === 0 ? "not-allowed" : "pointer";
+  }
 }
 
 function renderScheduleGrid() {
   const grid = document.getElementById("scheduleGrid");
   grid.innerHTML = "";
   const filteredCourses = getFilteredCourses();
+  const conflicts = getSelectedCourseConflicts();
+  const conflictIds = getConflictCourseIds(conflicts);
 
   // Header
   const headerTimeCell = document.createElement("div");
@@ -321,13 +440,27 @@ function renderScheduleGrid() {
         container.className = "course-cards-container";
 
         items.forEach((course) => {
-          const card = document.createElement("button");
-          card.className = `course-card course-card--${course.type.toLowerCase()}`;
+          const card = document.createElement("div");
+          const isSelected = isCourseSelected(course);
+          const hasConflict = conflictIds.has(course.id);
+          card.className = `course-card course-card--${course.type.toLowerCase()} ${isSelected ? "course-card--selected" : ""} ${hasConflict ? "course-card--conflict" : ""}`;
+          card.setAttribute("role", "button");
+          card.setAttribute("tabindex", "0");
           card.onclick = () => openModal(course);
+          card.onkeydown = (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              openModal(course);
+            }
+          };
           card.innerHTML = `
             <div class="course-card__top">
               <span class="course-card__name">${escapeHtml(shortName(course.name))}</span>
-              <span class="badge">${course.type}</span>
+              <div class="course-card__actions">
+                <button class="course-card__select" type="button" aria-pressed="${isSelected}">
+                  ${isSelected ? "✓" : "+"}
+                </button>
+              </div>
             </div>
             <div class="course-card__meta">
               <strong>${escapeHtml(course.code)} · ${escapeHtml(course.className)}</strong>
@@ -335,6 +468,13 @@ function renderScheduleGrid() {
               <span>${escapeHtml(course.teacher || t().notInformed)}</span>
             </div>
           `;
+
+          const selectButton = card.querySelector(".course-card__select");
+          selectButton.addEventListener("click", (event) => {
+            event.stopPropagation();
+            toggleCourseSelection(course, event);
+          });
+
           container.appendChild(card);
         });
 
@@ -350,6 +490,8 @@ function renderCourseList() {
   const list = document.getElementById("courseList");
   list.innerHTML = "";
   const filteredCourses = getFilteredCourses();
+  const conflicts = getSelectedCourseConflicts();
+  const conflictIds = getConflictCourseIds(conflicts);
 
   if (filteredCourses.length === 0) {
     const noResults = document.createElement("div");
@@ -360,13 +502,18 @@ function renderCourseList() {
   }
 
   filteredCourses.forEach((course) => {
-    const item = document.createElement("button");
-    item.className = "list-item";
+    const item = document.createElement("div");
+    const isSelected = isCourseSelected(course);
+    const hasConflict = conflictIds.has(course.id);
+    item.className = `list-item ${isSelected ? "list-item--selected" : ""} ${hasConflict ? "list-item--conflict" : ""}`;
     item.onclick = () => openModal(course);
     item.innerHTML = `
       <div class="list-item__title">
         <h3>${course.number}. ${escapeHtml(course.name)}</h3>
-        <span class="badge">${course.type}</span>
+        <div class="list-item__actions">
+          <span class="badge">${course.type}</span>
+          <button class="list-item__toggle" type="button" aria-pressed="${isSelected}">${isSelected ? t().selected : t().select}</button>
+        </div>
       </div>
       <div class="meta-grid">
         <div><strong>${t().code_label}</strong>${escapeHtml(course.code)} · ${escapeHtml(course.className)}</div>
@@ -375,8 +522,94 @@ function renderCourseList() {
         <div><strong>${t().room_label}</strong>${escapeHtml(course.room || t().notInformedRoom)}</div>
       </div>
     `;
+
+    const toggleButton = item.querySelector(".list-item__toggle");
+    toggleButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      toggleCourseSelection(course, event);
+    });
+
     list.appendChild(item);
   });
+}
+
+function applyStaticTranslations() {
+  const currentLanguage = state.language;
+  const locale = TRANSLATIONS[currentLanguage] || TRANSLATIONS.pt;
+  const searchInput = document.getElementById("searchInput");
+  const searchHelp = document.getElementById("searchHelp");
+  const codeFilter = document.getElementById("codeFilter");
+  const typeFilter = document.getElementById("typeFilter");
+  const isolatedFilter = document.getElementById("isolatedFilter");
+  const semesterFilter = document.getElementById("semesterFilter");
+  const heroTitle = document.getElementById("heroTitle");
+  const heroSubtitle = document.getElementById("heroSubtitle");
+  const heroPrintButton = document.getElementById("heroPrintButton");
+  const heroClearButton = document.getElementById("heroClearButton");
+  const languageButton = document.getElementById("languageToggleButton");
+  const themeButton = document.getElementById("themeToggleButton");
+  const scheduleTitle = document.getElementById("scheduleTitle");
+  const scheduleDescription = document.getElementById("scheduleDescription");
+  const listTitle = document.getElementById("listTitle");
+  const listDescription = document.getElementById("listDescription");
+  const resultInfoSummary = document.getElementById("resultInfoSummary");
+  const resultInfoLabel = document.getElementById("resultInfoLabel");
+  const calendarNote = document.getElementById("calendarNote");
+
+  if (searchInput) searchInput.placeholder = locale.search;
+  if (searchHelp) {
+    searchHelp.innerHTML = locale.searchHelp;
+    searchHelp.setAttribute("aria-label", locale.searchHelpTitle);
+  }
+
+  if (codeFilter?.options?.length) {
+    codeFilter.options[0].textContent = locale.code;
+  }
+  if (typeFilter?.options?.length) {
+    typeFilter.options[0].textContent = locale.type;
+    typeFilter.options[1].textContent = locale.optional;
+    typeFilter.options[2].textContent = locale.mandatory;
+  }
+  if (isolatedFilter?.options?.length) {
+    isolatedFilter.options[0].textContent = locale.isolated;
+    isolatedFilter.options[1].textContent = locale.yes;
+    isolatedFilter.options[2].textContent = locale.no;
+  }
+  if (semesterFilter?.options?.length) {
+    semesterFilter.options[0].textContent = locale.semester;
+  }
+
+  if (heroTitle) heroTitle.firstChild.textContent = `${locale.title} `;
+  if (heroSubtitle) heroSubtitle.textContent = locale.subtitle;
+  if (heroPrintButton) {
+    heroPrintButton.textContent = locale.print;
+    heroPrintButton.setAttribute("aria-label", locale.print);
+  }
+  if (heroClearButton) {
+    heroClearButton.textContent = locale.clear;
+    heroClearButton.setAttribute("aria-label", locale.clear);
+  }
+  if (languageButton) {
+    languageButton.setAttribute("title", currentLanguage === "pt" ? "Switch language" : "Alternar idioma");
+    languageButton.setAttribute("aria-label", currentLanguage === "pt" ? "Switch language" : "Alternar idioma");
+  }
+  if (themeButton) {
+    themeButton.setAttribute("title", currentLanguage === "pt" ? "Alternar tema" : "Toggle theme");
+    themeButton.setAttribute("aria-label", currentLanguage === "pt" ? "Alternar tema" : "Toggle theme");
+  }
+
+  if (scheduleTitle) scheduleTitle.textContent = locale.schedule;
+  if (scheduleDescription) scheduleDescription.textContent = locale.scheduleDesc;
+  if (listTitle) listTitle.textContent = locale.list;
+  if (listDescription) listDescription.textContent = locale.listDesc;
+
+  if (resultInfoSummary) resultInfoSummary.textContent = locale.resultSummary;
+  if (resultInfoLabel) resultInfoLabel.textContent = locale.disciplines;
+
+  if (calendarNote) {
+    calendarNote.innerHTML = `<strong>${locale.googleCalendar}:</strong> ${locale.addToGoogleCalendar}...`;
+    calendarNote.setAttribute("aria-label", `${locale.googleCalendar}: ${locale.addToGoogleCalendar}`);
+  }
 }
 
 function renderUI() {
@@ -390,6 +623,7 @@ function openModal(course) {
   const modal = document.getElementById("modal");
   const modalTitle = document.getElementById("modalTitle");
   const modalBody = document.getElementById("modalBody");
+  const isSelected = isCourseSelected(course);
 
   modal.setAttribute("aria-hidden", "false");
   modalTitle.textContent = course.name;
@@ -424,6 +658,10 @@ function openModal(course) {
         <strong>${escapeHtml(course.language || t().notInformed)}</strong>
       </div>
     </div>
+    <div class="modal-actions">
+      <button class="toolbar-btn" type="button" onclick="toggleCourseSelection(state.selectedCourse)">${isSelected ? t().selected : t().select}</button>
+      <button class="toolbar-btn" type="button" onclick="openGoogleCalendarForCourse(state.selectedCourse)">${t().addToGoogleCalendar}</button>
+    </div>
   `;
 
   modal.style.display = "flex";
@@ -433,6 +671,346 @@ function closeModal() {
   const modal = document.getElementById("modal");
   modal.style.display = "none";
   modal.setAttribute("aria-hidden", "true");
+}
+
+function getSemesterCalendarRange() {
+  const semesterInfo = parseSemesterIdentifier(state.selectedSemester || "");
+  const year = semesterInfo.year || new Date().getFullYear();
+  const term = semesterInfo.term;
+
+  if (term === 1) {
+    return {
+      start: getFirstWeekdayOfMonth(year, 2, 1),
+      end: getFirstWeekdayOfMonth(year, 6, 5),
+    };
+  }
+
+  return {
+    start: getFirstWeekdayOfMonth(year, 7, 1),
+    end: getFirstWeekdayOfMonth(year, 11, 5),
+  };
+}
+
+function getFirstWeekdayOfMonth(year, monthIndex, weekdayIndex) {
+  const date = new Date(year, monthIndex, 1);
+  const dayOffset = (weekdayIndex - date.getDay() + 7) % 7;
+  date.setDate(1 + dayOffset);
+  date.setHours(0, 0, 0, 0);
+  return date;
+}
+
+function formatGoogleOccurrenceDate(date) {
+  // Retorna a data no formato local correto (sem forçar UTC)
+  return formatIcsDate(date); 
+}
+
+function getNextCourseDateForDay(semesterStart, targetDay) {
+  const targetIndex = {
+    SEG: 1,
+    TER: 2,
+    QUA: 3,
+    QUI: 4,
+    SEX: 5,
+  }[targetDay] || 1;
+
+  const firstDate = new Date(semesterStart);
+  const currentIndex = firstDate.getDay() === 0 ? 7 : firstDate.getDay();
+  const offset = (targetIndex - currentIndex + 7) % 7;
+  firstDate.setDate(firstDate.getDate() + offset);
+
+  if (firstDate < semesterStart) {
+    firstDate.setDate(firstDate.getDate() + 7);
+  }
+
+  return firstDate;
+}
+
+function formatGoogleDate(date) {
+  return formatGoogleOccurrenceDate(date);
+}
+
+function buildGoogleCalendarUrl(course) {
+  if (!course?.meetings?.length) {
+    return "";
+  }
+
+  const semesterRange = getSemesterCalendarRange();
+  const startOfSemester = semesterRange.start;
+  const endOfSemester = semesterRange.end;
+  const dayOrder = ["SEG", "TER", "QUA", "QUI", "SEX"];
+  const meetingDays = Array.from(new Set(course.meetings.map((meeting) => meeting.day))).sort(
+    (left, right) => dayOrder.indexOf(left) - dayOrder.indexOf(right),
+  );
+  const googleDayMap = {
+    SEG: "MO",
+    TER: "TU",
+    QUA: "WE",
+    QUI: "TH",
+    SEX: "FR",
+  };
+
+  const firstMeeting = course.meetings[0];
+  const firstDayDate = getNextCourseDateForDay(startOfSemester, firstMeeting.day);
+  const [firstStartHour, firstStartMinute] = String(firstMeeting.start || "00:00").split(":").map(Number);
+  const [firstEndHour, firstEndMinute] = String(firstMeeting.end || "00:00").split(":").map(Number);
+
+  const eventStart = new Date(firstDayDate);
+  eventStart.setHours(firstStartHour, firstStartMinute, 0, 0);
+
+  const eventEnd = new Date(eventStart);
+  eventEnd.setHours(firstEndHour, firstEndMinute, 0, 0);
+  if (eventEnd <= eventStart) {
+    eventEnd.setDate(eventEnd.getDate() + 1);
+  }
+
+  if (eventStart > endOfSemester) {
+    return "";
+  }
+
+  const untilDate = new Date(endOfSemester);
+  untilDate.setHours(23, 59, 59, 999);
+  const recurrence = `RRULE:FREQ=WEEKLY;BYDAY=${meetingDays.map((day) => googleDayMap[day]).join(",")};UNTIL=${formatGoogleOccurrenceDate(untilDate)};WKST=SU`;
+
+  const text = `${shortName(course.name)} - ${course.code} (${course.className})`;
+  const details = [
+    `Disciplina: ${course.name}`,
+    `Código / turma: ${course.code} · ${course.className}`,
+    `Docente: ${course.teacher || t().notInformed}`,
+    `Sala: ${course.room || t().notInformedRoom}`,
+    `Tipo: ${course.type}`,
+    `Horário: ${course.scheduleText || t().notInformed}`,
+  ].join("\n");
+
+  const dates = `${formatGoogleDate(eventStart)}/${formatGoogleDate(eventEnd)}`;
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(text)}&dates=${dates}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(course.room || t().notInformedRoom)}&recur=${encodeURIComponent(recurrence)}`;
+}
+
+function getMeetingTimeRange(meeting) {
+  return {
+    start: parseClockToMinutes(meeting.start),
+    end: parseClockToMinutes(meeting.end),
+  };
+}
+
+function meetingsOverlap(firstMeeting, secondMeeting) {
+  if (firstMeeting.day !== secondMeeting.day) return false;
+  const firstRange = getMeetingTimeRange(firstMeeting);
+  const secondRange = getMeetingTimeRange(secondMeeting);
+  return firstRange.start < secondRange.end && secondRange.start < firstRange.end;
+}
+
+function getSelectedCourseConflicts() {
+  const selectedCourses = getSelectedCourses();
+  const conflicts = [];
+  const seen = new Set();
+
+  for (let index = 0; index < selectedCourses.length; index += 1) {
+    const firstCourse = selectedCourses[index];
+    for (let compareIndex = index + 1; compareIndex < selectedCourses.length; compareIndex += 1) {
+      const secondCourse = selectedCourses[compareIndex];
+      const firstMeetings = firstCourse.meetings || [];
+      const secondMeetings = secondCourse.meetings || [];
+
+      firstMeetings.forEach((firstMeeting) => {
+        secondMeetings.forEach((secondMeeting) => {
+          if (meetingsOverlap(firstMeeting, secondMeeting)) {
+            const key = `${firstCourse.id}-${secondCourse.id}-${firstMeeting.day}-${firstMeeting.start}-${firstMeeting.end}`;
+            if (seen.has(key)) return;
+            seen.add(key);
+            conflicts.push({
+              first: firstCourse,
+              second: secondCourse,
+              day: firstMeeting.day,
+              start: firstMeeting.start,
+              end: firstMeeting.end,
+            });
+          }
+        });
+      });
+    }
+  }
+
+  return conflicts;
+}
+
+function getConflictCourseIds(conflicts) {
+  const conflictIds = new Set();
+  conflicts.forEach((conflict) => {
+    conflictIds.add(conflict.first.id);
+    conflictIds.add(conflict.second.id);
+  });
+  return conflictIds;
+}
+
+function showPageNotification(title, bodyHtml, okLabel) {
+  const popup = document.getElementById("pagePopup");
+  const titleNode = document.getElementById("pagePopupTitle");
+  const bodyNode = document.getElementById("pagePopupBody");
+  const okButton = document.getElementById("pagePopupButton");
+
+  titleNode.textContent = title;
+  bodyNode.innerHTML = bodyHtml;
+  okButton.textContent = okLabel;
+  popup.setAttribute("aria-hidden", "false");
+  popup.style.display = "flex";
+}
+
+function showConflictNotification(conflicts) {
+  const conflictSummary = conflicts
+    .map((conflict) => `• ${conflict.first.name} × ${conflict.second.name} (${conflict.day}, ${conflict.start}–${conflict.end})`)
+    .join("<br />");
+
+  showPageNotification(
+    t().conflictTitle,
+    `
+      <p>${t().conflictMessage}</p>
+      <p class="popup-conflict-list">${conflictSummary}</p>
+      <p>${t().conflictHelp}</p>
+    `,
+    t().ok,
+  );
+}
+
+function closeConflictNotification() {
+  const popup = document.getElementById("pagePopup");
+  popup.style.display = "none";
+  popup.setAttribute("aria-hidden", "true");
+}
+
+function openGoogleCalendarForCourse(course) {
+  const calendarUrl = buildGoogleCalendarUrl(course);
+  if (!calendarUrl) {
+    showPageNotification(
+      t().scheduleMissingTitle,
+      `<p>${t().scheduleMissingMessage}</p>`,
+      t().ok,
+    );
+    return;
+  }
+
+  window.open(calendarUrl, "_blank", "noopener,noreferrer");
+}
+
+function downloadGoogleCalendarIcs(selectedCourses) {
+  const semesterRange = getSemesterCalendarRange();
+  const startOfSemester = semesterRange.start;
+  const endOfSemester = semesterRange.end;
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//PPGCC UFMG//Horarios//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+  ];
+
+  selectedCourses.forEach((course, courseIndex) => {
+    const courseMeetings = Array.from(
+      new Map(
+        (course.meetings || []).map((meeting) => [`${meeting.day}-${meeting.start}-${meeting.end}`, meeting]),
+      ).values(),
+    );
+
+    courseMeetings.forEach((meeting) => {
+      const firstDayDate = getNextCourseDateForDay(startOfSemester, meeting.day);
+      const [startHour, startMinute] = String(meeting.start || "00:00").split(":").map(Number);
+      const [endHour, endMinute] = String(meeting.end || "00:00").split(":").map(Number);
+      
+      const eventStart = new Date(firstDayDate);
+      eventStart.setHours(startHour, startMinute, 0, 0);
+      
+      const eventEnd = new Date(eventStart);
+      eventEnd.setHours(endHour, endMinute, 0, 0);
+      
+      const recurrenceDays = courseMeetings.flatMap((currentMeeting) => currentMeeting.day).filter(Boolean);
+      const byDay = Array.from(new Set(recurrenceDays)).map((day) => ({ SEG: "MO", TER: "TU", QUA: "WE", QUI: "TH", SEX: "FR" }[day])).join(",");
+      const untilDate = new Date(endOfSemester);
+      untilDate.setHours(23, 59, 59, 999);
+
+      // --- Lógica para calcular os feriados (EXDATE) no mesmo horário da aula ---
+      const startHourStr = String(startHour).padStart(2, "0");
+      const startMinStr = String(startMinute).padStart(2, "0");
+      const exdates = HOLIDAYS.map(holiday => {
+        const [hYear, hMonth, hDay] = holiday.split("-");
+        return `${hYear}${hMonth}${hDay}T${startHourStr}${startMinStr}00`;
+      }).join(",");
+
+      lines.push(
+        "BEGIN:VEVENT",
+        `UID:${course.id}-${courseIndex}-${meeting.day}-${meeting.start}-${Date.now()}@oferta-ppgcc`,
+        // DTSTAMP precisa ser UTC absoluto para manter o arquivo ICS válido perante a norma
+        `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z")}`,
+        `DTSTART;TZID=America/Sao_Paulo:${formatIcsDate(eventStart)}`,
+        `DTEND;TZID=America/Sao_Paulo:${formatIcsDate(eventEnd)}`,
+        `SUMMARY:${String(course.name).replace(/\r?\n/g, " ")}`,
+        `DESCRIPTION:${String([`Código / turma: ${course.code} · ${course.className}`, `Docente: ${course.teacher || t().notInformed}`, `Sala: ${course.room || t().notInformedRoom}`, `Tipo: ${course.type}`, `Horário: ${course.scheduleText || t().notInformed}`].join("\\n")).replace(/\r?\n/g, " ")}`,
+        `LOCATION:${String(course.room || t().notInformedRoom).replace(/\r?\n/g, " ")}`,
+        `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${formatIcsDate(untilDate)};WKST=SU`
+      );
+
+      // Insere a linha de exclusão caso existam feriados mapeados
+      if (exdates) {
+        lines.push(`EXDATE;TZID=America/Sao_Paulo:${exdates}`);
+      }
+
+      lines.push("END:VEVENT");
+    });
+  });
+
+  lines.push("END:VCALENDAR");
+  const icsContent = `${lines.join("\r\n")}\r\n`;
+  const dataBlob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(dataBlob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `disciplinas-selecionadas-${state.selectedSemester || "semestre"}.ics`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function formatIcsDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+  return `${year}${month}${day}T${hours}${minutes}${seconds}`;
+}
+
+function openSelectedGoogleCalendar() {
+  const selectedCourses = getSelectedCourses();
+  if (selectedCourses.length === 0) {
+    showPageNotification(
+      t().selectionMissingTitle,
+      `<p>${t().selectionMissingMessage}</p>`,
+      t().ok,
+    );
+    return;
+  }
+
+  const conflicts = getSelectedCourseConflicts();
+  if (conflicts.length > 0) {
+    showConflictNotification(conflicts);
+    return;
+  }
+
+  if (selectedCourses.length === 1) {
+    const course = selectedCourses[0];
+    const calendarUrl = buildGoogleCalendarUrl(course);
+    if (!calendarUrl) {
+      showPageNotification(
+        t().scheduleMissingTitle,
+        `<p>${t().scheduleMissingMessage}</p>`,
+        t().ok,
+      );
+      return;
+    }
+    window.open(calendarUrl, "_blank", "noopener,noreferrer");
+    return;
+  }
+
+  downloadGoogleCalendarIcs(selectedCourses);
+  window.open("https://calendar.google.com/calendar/u/0/r/settings/export", "_blank", "noopener,noreferrer");
 }
 
 // Export Functions
@@ -489,12 +1067,19 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         const data = JSON.parse(e.target?.result);
         console.log("Dados importados:", data);
-        alert("JSON importado com sucesso!");
+        showPageNotification("JSON", "<p>JSON importado com sucesso!</p>", t().ok);
       } catch (error) {
-        alert("Erro ao importar JSON");
+        showPageNotification("JSON", "<p>Erro ao importar JSON.</p>", t().ok);
       }
     };
     reader.readAsText(file);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeModal();
+      closeConflictNotification();
+    }
   });
 });
 
@@ -568,6 +1153,7 @@ async function loadSemesterData(filename) {
     state.selectedType = "all";
     state.selectedIsolated = "all";
     state.searchTerms = "";
+    state.selectedCourseIds = [];
 
     // Update UI
     document.getElementById("semesterDisplay").textContent = semesterLabel;
@@ -610,5 +1196,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", () => {
   updateTheme();
+  updateLanguage();
   loadSemesters();
 });
