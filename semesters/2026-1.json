@@ -1,0 +1,679 @@
+[
+  {
+    "number": 1,
+    "code": "DCC831",
+    "name": "TECC: Confiabilidade em Sistemas de Redes Distribuídos",
+    "className": "PG1",
+    "type": "OP",
+    "scheduleText": "2a e 4a - 17:00/18:40",
+    "teacher": "Prof. Aldri",
+    "room": "CAD3-A212",
+    "startDate": "09/03/2026",
+    "isolated": "Não",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "SEG",
+        "start": "17:00",
+        "end": "18:40"
+      },
+      {
+        "day": "QUA",
+        "start": "17:00",
+        "end": "18:40"
+      }
+    ]
+  },
+  {
+    "number": 2,
+    "code": "DCC831",
+    "name": "TECC: Aprendizado de Máquina e Inferência Causal",
+    "className": "PG2",
+    "type": "OP",
+    "scheduleText": "3a e 5a - 17:00/18:40",
+    "teacher": "Prof. Anísio",
+    "room": "CAD3-A213",
+    "startDate": "10/03/2026",
+    "isolated": "Não",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "TER",
+        "start": "17:00",
+        "end": "18:40"
+      },
+      {
+        "day": "QUI",
+        "start": "17:00",
+        "end": "18:40"
+      }
+    ]
+  },
+  {
+    "number": 3,
+    "code": "DCC831",
+    "name": "TECC: Projeto de Agentes de Inteligência Artificial",
+    "className": "PG3",
+    "type": "OP",
+    "scheduleText": "2a e 4a - 14:55/16:35",
+    "teacher": "Prof. Antonio Alfredo",
+    "room": "CAD3-A407",
+    "startDate": "04/03/2026",
+    "isolated": "Sim",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "SEG",
+        "start": "14:55",
+        "end": "16:35"
+      },
+      {
+        "day": "QUA",
+        "start": "14:55",
+        "end": "16:35"
+      }
+    ]
+  },
+  {
+    "number": 4,
+    "code": "DCC831",
+    "name": "TECC: Proteção da Privacidade em Aprendizado de Máquina",
+    "className": "PG4",
+    "type": "OP",
+    "scheduleText": "2a e 4a - 17:00/18:40",
+    "teacher": "Prof. Frederico Gadelha",
+    "room": "CAD3-A213",
+    "startDate": "09/03/2026",
+    "isolated": "Não",
+    "coursePlanAvailable": false,
+    "meetings": [
+      {
+        "day": "SEG",
+        "start": "17:00",
+        "end": "18:40"
+      },
+      {
+        "day": "QUA",
+        "start": "17:00",
+        "end": "18:40"
+      }
+    ]
+  },
+  {
+    "number": 5,
+    "code": "DCC831",
+    "name": "TECC: Computação Quântica",
+    "className": "PG5",
+    "type": "OP",
+    "scheduleText": "3a e 5a - 09:25/11:05",
+    "teacher": "Prof. Gabriel Coutinho",
+    "room": "DCC-2009",
+    "startDate": "03/03/2026",
+    "isolated": "Sim",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "TER",
+        "start": "09:25",
+        "end": "11:05"
+      },
+      {
+        "day": "QUI",
+        "start": "09:25",
+        "end": "11:05"
+      }
+    ]
+  },
+  {
+    "number": 6,
+    "code": "DCC831",
+    "name": "TECC: Métodos Quantitativos",
+    "className": "PG6",
+    "type": "OP",
+    "scheduleText": "3a e 5a - 14:55/16:35",
+    "teacher": "Prof. Jussara",
+    "room": "DCC-2009",
+    "startDate": "05/03/2026",
+    "isolated": "Não",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "TER",
+        "start": "14:55",
+        "end": "16:35"
+      },
+      {
+        "day": "QUI",
+        "start": "14:55",
+        "end": "16:35"
+      }
+    ]
+  },
+  {
+    "number": 7,
+    "code": "DCC831",
+    "name": "TECC: Redes sem Fio",
+    "className": "PG7",
+    "type": "OP",
+    "scheduleText": "3a e 5a - 14:55/16:35",
+    "teacher": "Prof. Luiz Filipe",
+    "room": "CAD3-A311",
+    "startDate": "05/03/2026",
+    "isolated": "Sim",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "TER",
+        "start": "14:55",
+        "end": "16:35"
+      },
+      {
+        "day": "QUI",
+        "start": "14:55",
+        "end": "16:35"
+      }
+    ]
+  },
+  {
+    "number": 8,
+    "code": "DCC831",
+    "name": "TECC: Processamento de Linguagem Natural Inteligente, Responsável e Sustentável",
+    "className": "PG8",
+    "type": "OP",
+    "scheduleText": "2a e 4a - 17:00/18:40",
+    "teacher": "Prof. Marcos André",
+    "room": "CAD3-A210",
+    "startDate": "04/03/2026",
+    "isolated": "Sim",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "SEG",
+        "start": "17:00",
+        "end": "18:40"
+      },
+      {
+        "day": "QUA",
+        "start": "17:00",
+        "end": "18:40"
+      }
+    ]
+  },
+  {
+    "number": 9,
+    "code": "DCC831",
+    "name": "TECC: Fundamentos Estatísticos de Ciência dos Dados B",
+    "className": "PG9",
+    "type": "OP",
+    "scheduleText": "3a e 5a - 09:25/11:05",
+    "teacher": "Prof. Renato Assunção",
+    "room": "DCC-2009",
+    "startDate": "05/03/2026",
+    "isolated": "Não",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "TER",
+        "start": "09:25",
+        "end": "11:05"
+      },
+      {
+        "day": "QUI",
+        "start": "09:25",
+        "end": "11:05"
+      }
+    ]
+  },
+  {
+    "number": 10,
+    "code": "DCC831",
+    "name": "TECC: Recuperação de Informação",
+    "className": "P10",
+    "type": "OP",
+    "scheduleText": "2a e 4a - 14:55/16:35",
+    "teacher": "Prof. Rodrygo",
+    "room": "DCC-2013",
+    "startDate": "09/03/2026",
+    "isolated": "Não",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "SEG",
+        "start": "14:55",
+        "end": "16:35"
+      },
+      {
+        "day": "QUA",
+        "start": "14:55",
+        "end": "16:35"
+      }
+    ]
+  },
+  {
+    "number": 11,
+    "code": "DCC831",
+    "name": "TECC: Aprendizado Descritivo",
+    "className": "P11",
+    "type": "OP",
+    "scheduleText": "3a e 5a - 17:00/18:40",
+    "teacher": "Prof. Renato Vimieiro",
+    "room": "CAD3-A406",
+    "startDate": "03/03/2026",
+    "isolated": "Sim",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "TER",
+        "start": "17:00",
+        "end": "18:40"
+      },
+      {
+        "day": "QUI",
+        "start": "17:00",
+        "end": "18:40"
+      }
+    ]
+  },
+  {
+    "number": 12,
+    "code": "DCC831",
+    "name": "TECC: Menores em Grafos",
+    "className": "P12",
+    "type": "OP",
+    "scheduleText": "3a e 5a - 13:00/14:40",
+    "teacher": "Prof. Guilherme Gomes",
+    "room": "CAD3-A309",
+    "startDate": "10/03/2026",
+    "isolated": "Sim",
+    "coursePlanAvailable": false,
+    "meetings": [
+      {
+        "day": "TER",
+        "start": "13:00",
+        "end": "14:40"
+      },
+      {
+        "day": "QUI",
+        "start": "13:00",
+        "end": "14:40"
+      }
+    ]
+  },
+  {
+    "number": 13,
+    "code": "DCC831",
+    "name": "TECC: Teste de Software",
+    "className": "P13",
+    "type": "OP",
+    "scheduleText": "3a e 5a - 19:00/20:40",
+    "teacher": "Prof. André Hora",
+    "room": "CAD3-A212",
+    "startDate": "10/03/2026",
+    "isolated": "Sim",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "TER",
+        "start": "19:00",
+        "end": "20:40"
+      },
+      {
+        "day": "QUI",
+        "start": "19:00",
+        "end": "20:40"
+      }
+    ]
+  },
+  {
+    "number": 14,
+    "code": "DCC831",
+    "name": "TES: Manutenção e Evolução de Software",
+    "className": "P14",
+    "type": "OP",
+    "scheduleText": "2a e 4a - 17:00/18:40",
+    "teacher": "Prof. Marco Túlio",
+    "room": "CAD3-B302",
+    "startDate": "02/03/2026",
+    "isolated": "Sim",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "SEG",
+        "start": "17:00",
+        "end": "18:40"
+      },
+      {
+        "day": "QUA",
+        "start": "17:00",
+        "end": "18:40"
+      }
+    ]
+  },
+  {
+    "number": 15,
+    "code": "DCC831",
+    "name": "Static Program Analysis",
+    "className": "P15",
+    "type": "OP",
+    "scheduleText": "2a e 4a - 14:55/16:35",
+    "teacher": "Prof. Fernando",
+    "room": "CAD3-A210",
+    "startDate": "02/03/2026",
+    "isolated": "Sim",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "SEG",
+        "start": "14:55",
+        "end": "16:35"
+      },
+      {
+        "day": "QUA",
+        "start": "14:55",
+        "end": "16:35"
+      }
+    ]
+  },
+  {
+    "number": 16,
+    "code": "DCC850",
+    "name": "TECC: Seminários Avançados de Pós-Graduação I",
+    "className": "PG1",
+    "type": "OB",
+    "scheduleText": "6a - 10:00/12:40",
+    "teacher": "Prof. Fabrício",
+    "room": "2077",
+    "startDate": null,
+    "isolated": "Não",
+    "coursePlanAvailable": false,
+    "meetings": [
+      {
+        "day": "SEX",
+        "start": "10:00",
+        "end": "12:40"
+      }
+    ]
+  },
+  {
+    "number": 17,
+    "code": "DCC850",
+    "name": "TECC: Seminários Avançados de Pós-Graduação II",
+    "className": "PG2",
+    "type": "OB",
+    "scheduleText": "6a - 10:00/12:40",
+    "teacher": "Prof. Pedro",
+    "room": "2077",
+    "startDate": null,
+    "isolated": "Não",
+    "coursePlanAvailable": false,
+    "meetings": [
+      {
+        "day": "SEX",
+        "start": "10:00",
+        "end": "12:40"
+      }
+    ]
+  },
+  {
+    "number": 18,
+    "code": "DCC850",
+    "name": "TECC: Seminários Avançados em Compiladores",
+    "className": "PG3",
+    "type": "OP",
+    "scheduleText": "6a - 14:00/15:40",
+    "teacher": "Prof. Fernando",
+    "room": "CAD3-A310",
+    "startDate": "06/03/2026",
+    "isolated": "Não",
+    "coursePlanAvailable": false,
+    "meetings": [
+      {
+        "day": "SEX",
+        "start": "14:00",
+        "end": "15:40"
+      }
+    ]
+  },
+  {
+    "number": 19,
+    "code": "DCC851",
+    "name": "TECC: Tópicos avançados de combinatória algébrica",
+    "className": "PG1",
+    "type": "OP",
+    "scheduleText": "3a - 11:15/12:55",
+    "teacher": "Prof. Gabriel Coutinho",
+    "room": null,
+    "startDate": "03/03/2026",
+    "isolated": "Não",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "TER",
+        "start": "11:15",
+        "end": "12:55"
+      }
+    ]
+  },
+  {
+    "number": 20,
+    "code": "DCC851",
+    "name": "TECC: Métodos de Avaliação de Comunicabilidade",
+    "className": "PG2",
+    "type": "OP",
+    "scheduleText": "3a - 19:00/20:40",
+    "teacher": "Prof. Raquel Prates",
+    "room": null,
+    "startDate": "03/03/2026",
+    "isolated": "Sim",
+    "coursePlanAvailable": false,
+    "meetings": [
+      {
+        "day": "TER",
+        "start": "19:00",
+        "end": "20:40"
+      }
+    ]
+  },
+  {
+    "number": 21,
+    "code": "DCC851",
+    "name": "TECC: Fundamentos da Teoria de Engenharia Semiótica",
+    "className": "PG3",
+    "type": "OP",
+    "scheduleText": "CANCELADA",
+    "teacher": null,
+    "room": null,
+    "startDate": null,
+    "isolated": null,
+    "coursePlanAvailable": false,
+    "meetings": []
+  },
+  {
+    "number": 22,
+    "code": "DCC851",
+    "name": "TECC: Verificação Formal de Hardware",
+    "className": "PG4",
+    "type": "OP",
+    "scheduleText": "3a - 19:00/20:40",
+    "teacher": "Prof. Fernando Magno",
+    "room": "ICEX-1009-1010",
+    "startDate": "03/03/2026",
+    "isolated": "Sim",
+    "coursePlanAvailable": false,
+    "meetings": [
+      {
+        "day": "TER",
+        "start": "19:00",
+        "end": "20:40"
+      }
+    ]
+  },
+  {
+    "number": 23,
+    "code": "DCC851",
+    "name": "TECC: Engenharia de Software Inteligente",
+    "className": "PG5",
+    "type": "OP",
+    "scheduleText": "5a - 17:00/18:40",
+    "teacher": "Prof. Eduardo Figueiredo",
+    "room": "CAD3-A308",
+    "startDate": "05/03/2026",
+    "isolated": "Sim",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "QUI",
+        "start": "17:00",
+        "end": "18:40"
+      }
+    ]
+  },
+  {
+    "number": 24,
+    "code": "DCC851",
+    "name": "TECC: Seminários em Engenharia de Software",
+    "className": "PG6",
+    "type": "OP",
+    "scheduleText": "5a - 19:00/20:40",
+    "teacher": "Prof. Eduardo Figueiredo",
+    "room": "CAD3-A308",
+    "startDate": "05/03/2026",
+    "isolated": "Sim",
+    "coursePlanAvailable": false,
+    "meetings": [
+      {
+        "day": "QUI",
+        "start": "19:00",
+        "end": "20:40"
+      }
+    ]
+  },
+  {
+    "number": 25,
+    "code": "DCC865",
+    "name": "Projeto e Análise de Algoritmos",
+    "className": "PG",
+    "type": "OB",
+    "scheduleText": "2a e 4a - 13:00/14:40",
+    "teacher": "Prof. Olga",
+    "room": "CAD3-A312",
+    "startDate": "09/03/2026",
+    "isolated": "Não",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "SEG",
+        "start": "13:00",
+        "end": "14:40"
+      },
+      {
+        "day": "QUA",
+        "start": "13:00",
+        "end": "14:40"
+      }
+    ]
+  },
+  {
+    "number": 26,
+    "code": "DCC865",
+    "name": "Projeto e Análise de Algoritmos",
+    "className": "PG1",
+    "type": "OB",
+    "scheduleText": "2a e 4a - 13:00/14:40",
+    "teacher": "Prof. Olga",
+    "room": "CAD3-A312",
+    "startDate": "09/03/2026",
+    "isolated": "Não",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "SEG",
+        "start": "13:00",
+        "end": "14:40"
+      },
+      {
+        "day": "QUA",
+        "start": "13:00",
+        "end": "14:40"
+      }
+    ]
+  },
+  {
+    "number": 27,
+    "code": "DCC904",
+    "name": "Estágio em Docência I",
+    "className": "PG",
+    "type": "OB",
+    "scheduleText": null,
+    "teacher": "Prof. Erickson",
+    "room": null,
+    "startDate": null,
+    "isolated": "Não",
+    "coursePlanAvailable": false,
+    "meetings": []
+  },
+  {
+    "number": 28,
+    "code": "DCC905",
+    "name": "Estágio em Docência II",
+    "className": "PG",
+    "type": "OB",
+    "scheduleText": null,
+    "teacher": "Prof. Fabrício",
+    "room": null,
+    "startDate": null,
+    "isolated": "Não",
+    "coursePlanAvailable": false,
+    "meetings": []
+  },
+  {
+    "number": 29,
+    "code": "DCC909",
+    "name": "Ambientes de Computação",
+    "className": "PG",
+    "type": "OP",
+    "scheduleText": "3a e 5a - 14:55/16:35",
+    "teacher": "Prof. Raquel Minardi",
+    "room": "ICEX-1009-1010",
+    "startDate": "10/03/2026",
+    "isolated": "Não",
+    "coursePlanAvailable": false,
+    "meetings": [
+      {
+        "day": "TER",
+        "start": "14:55",
+        "end": "16:35"
+      },
+      {
+        "day": "QUI",
+        "start": "14:55",
+        "end": "16:35"
+      }
+    ]
+  },
+  {
+    "number": 30,
+    "code": "DCC917",
+    "name": "Mineração de Dados",
+    "className": "PG",
+    "type": "OP",
+    "scheduleText": "3a e 5a - 13:00/14:40",
+    "teacher": "Prof. Wagner",
+    "room": "CAD3-B306",
+    "startDate": "03/03/2026",
+    "isolated": "Não",
+    "coursePlanAvailable": true,
+    "meetings": [
+      {
+        "day": "TER",
+        "start": "13:00",
+        "end": "14:40"
+      },
+      {
+        "day": "QUI",
+        "start": "13:00",
+        "end": "14:40"
+      }
+    ]
+  }
+]
