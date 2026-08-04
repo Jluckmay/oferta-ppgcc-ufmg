@@ -3,22 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grade de Horários — PPGCC/UFMG 2026/2</title>
+  <title>Grade de Horários - PPGCC UFMG</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="app"></div>
+
+  <!-- Hero Section -->
   <header class="hero">
     <div class="hero__content">
-      <p class="eyebrow">UFMG · PPGCC · Oferta 2026/2</p>
-      <h1>Grade de Horários 2026/2</h1>
-      <p class="subtitle">Visualização interativa da oferta atualizada de disciplinas do PPGCC, organizada por dia, horário, sala e docente.</p>
+      <p class="eyebrow">UFMG · PPGCC · Oferta <span id="semesterDisplay">2026-2</span></p>
+      <h1>Grade de Horários <span id="semesterTitle">2026-2</span></h1>
+      <p class="subtitle">Visualização interativa da oferta atualizada de disciplinas do PPGCC</p>
       <div class="hero__actions">
-        <button id="btnPrint" class="btn btn--light" type="button">Imprimir / salvar PDF</button>
-        <button id="btnClear" class="btn btn--ghost" type="button">Limpar filtros</button>
+        <button class="btn btn--light" onclick="window.print()">
+          Imprimir / salvar PDF
+        </button>
+        <button class="btn btn--ghost" onclick="clearFilters()">
+          Limpar filtros
+        </button>
       </div>
     </div>
-
-    <aside class="hero__panel" aria-label="Resumo da oferta">
+    <aside class="hero__panel">
       <div>
         <strong id="totalCourses">0</strong>
         <span>disciplinas</span>
@@ -28,87 +34,111 @@
         <span>com horário</span>
       </div>
       <div>
-        <strong id="roomsCount">0</strong>
+        <strong id="totalRooms">0</strong>
         <span>salas informadas</span>
       </div>
     </aside>
   </header>
 
+  <!-- Main Content -->
   <main class="page">
-    <section class="notice" aria-label="Informações da fonte">
-      <strong>Fonte atualizada:</strong> Oferta disciplinas PPGCC 2026-2, versão <em>Oferta PPGCC 20262_v3.xlsx</em>, datada de 31/07/2026. A oferta e a alocação foram aprovadas pela Câmara do DCC e homologadas pelo Colegiado do PPGCC em 03/07/2026.
-    </section>
+    <!-- Toolbar -->
+    <section class="toolbar">
+      <div class="toolbar__search">
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="Buscar disciplina, código, turma, docente ou sala"
+          class="search-input"
+          oninput="applyFilters()"
+        />
+        <small style="display:block; margin-top:0.4rem; color: var(--text-muted, #6b7280);">
+          Busca múltipla: use ponto e vírgula para separar vários termos, por exemplo <strong>DCC001; DCC002</strong>.
+        </small>
+      </div>
 
-    <section class="toolbar" aria-label="Filtros da grade">
-      <label class="search">
-        <span>Buscar disciplina, código, turma, docente ou sala</span>
-        <input id="searchInput" type="search" placeholder="Ex.: Robótica, DCC831, PG9, A312..." autocomplete="off" />
-      </label>
-
-      <label>
-        <span>Código</span>
-        <select id="codeFilter">
-          <option value="all">Todos</option>
+      <div class="toolbar__filters">
+        <select id="codeFilter" class="filter-select" onchange="applyFilters()">
+          <option value="all">Código</option>
         </select>
-      </label>
 
-      <label>
-        <span>Tipo</span>
-        <select id="typeFilter">
-          <option value="all">Todos</option>
+        <select id="typeFilter" class="filter-select" onchange="applyFilters()">
+          <option value="all">Tipo</option>
           <option value="OP">Optativas</option>
           <option value="OB">Obrigatórias</option>
         </select>
-      </label>
 
-      <label>
-        <span>Disciplina isolada</span>
-        <select id="isolatedFilter">
-          <option value="all">Todas</option>
-          <option value="SIM">Aceita</option>
-          <option value="NÃO">Não aceita</option>
+        <select id="isolatedFilter" class="filter-select" onchange="applyFilters()">
+          <option value="all">Disciplina isolada</option>
+          <option value="SIM">Sim</option>
+          <option value="NÃO">Não</option>
         </select>
-      </label>
 
+        <select id="semesterFilter" class="filter-select" onchange="loadSemesterData(this.value)">
+          <option value="">Semestre</option>
+        </select>
+      </div>
+
+      <div class="toolbar__actions">
+        <button class="toolbar-btn" onclick="exportAsJSON()" title="Baixar como JSON">
+          ⬇️ JSON
+        </button>
+        <button class="toolbar-btn" onclick="exportAsImage()" title="Baixar como Imagem">
+          ⬇️ Imagem
+        </button>
+        <button class="toolbar-btn" onclick="importJSON()" title="Importar JSON">
+          ⬆️ JSON
+        </button>
+        <button class="toolbar-btn" onclick="toggleLanguage()" title="Alternar idioma">
+          🌐 <span id="langDisplay">PT</span>
+        </button>
+        <button class="toolbar-btn" onclick="toggleTheme()" title="Alternar tema">
+          <span id="themeIcon">🌙</span>
+        </button>
+      </div>
     </section>
 
-    <section class="legend" aria-label="Legenda">
-      <span><i class="dot dot--op"></i> Optativa</span>
-      <span><i class="dot dot--ob"></i> Obrigatória</span>
-      <span><i class="pill-small pill-small--muted">—</i> Sem horário informado</span>
+    <!-- Result Info -->
+    <section class="result-info">
+      <span id="resultCount">0</span> de <span id="totalCount">0</span> disciplinas
     </section>
 
+    <!-- Schedule Grid -->
     <section class="schedule-card">
       <div class="section-header">
-        <div>
-          <h2>Grade semanal</h2>
-          <p>Os cards exibem disciplina, turma, sala e docente. Clique em um card para ver os detalhes completos e comparar as opções disponíveis.</p>
-        </div>
-        <span id="resultInfo" class="result-info"></span>
+        <h2>Grade semanal</h2>
+        <p>Os cards exibem disciplina, turma, sala e docente. Clique em um card para ver os detalhes completos.</p>
       </div>
-      <div id="scheduleGrid" class="schedule-grid" aria-live="polite"></div>
+      <div id="scheduleGrid" class="schedule-grid"></div>
     </section>
 
+    <!-- Course List -->
     <section class="list-card">
       <div class="section-header">
-        <div>
-          <h2>Lista de disciplinas</h2>
-          <p>Inclui carga horária, créditos, tipo, docente, sala, início das aulas e possibilidade de disciplina isolada.</p>
-        </div>
+        <h2>Lista de disciplinas</h2>
+        <p>Inclui carga horária, créditos, tipo, docente, sala, início das aulas e possibilidade de disciplina isolada.</p>
       </div>
       <div id="courseList" class="course-list"></div>
     </section>
   </main>
 
-  <dialog id="courseModal" class="modal">
-    <button id="closeModal" class="modal__close" aria-label="Fechar detalhes">×</button>
-    <div id="modalContent"></div>
-  </dialog>
+  <!-- Modal -->
+  <div id="modal" class="modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeModal()"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle"></h2>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
 
-  <footer class="footer">
-    <p>Projeto estático em HTML, CSS e JavaScript. Dados organizados a partir da oferta atualizada do PPGCC 2026/2.</p>
-  </footer>
+  <!-- Hidden File Input -->
+  <input type="file" id="fileInput" accept=".json" style="display: none;" />
 
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="semester-data.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
