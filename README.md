@@ -4,7 +4,10 @@ Este repositório contém uma página web estática desenvolvida em HTML, CSS e 
 
 A interface permite consultar rapidamente disciplinas, turmas, salas, docentes, tipos de oferta, disciplina isolada e demais detalhes em uma visualização simples e interativa.
 
-Acesso público: https://ricardo.bib.br/horario_ia_20262/
+### Acesso público:
+
+- Fork: https://jluckmay.github.io/oferta-ppgcc-ufmg/
+- Original: https://ricardo.bib.br/horario_ia_20262/
 
 ## Objetivo
 
