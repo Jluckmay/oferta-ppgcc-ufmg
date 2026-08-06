@@ -1095,12 +1095,14 @@ async function loadSemesters() {
     if (!response.ok) {
       throw new Error(`Manifesto não encontrado: ${response.status}`);
     }
-
     const manifest = await response.json();
     semesterFiles = Array.isArray(manifest.semesters) ? manifest.semesters : [];
   } catch (error) {
-    console.warn("Não foi possível carregar o manifesto; usando fallback local.", error);
-    semesterFiles = Object.keys(SEMESTER_DATA || {});
+    console.warn("Não foi possível carregar o manifesto via fetch. Usando fallback local (SEMESTER_DATA).", error);
+    // Fallback: Pega as chaves do objeto estático SEMESTER_DATA (definido no semester-data.js)
+    if (typeof SEMESTER_DATA !== 'undefined') {
+      semesterFiles = Object.keys(SEMESTER_DATA || {});
+    }
   }
 
   const latestSemester = getMostRecentSemester(semesterFiles);
@@ -1123,19 +1125,31 @@ async function loadSemesters() {
 
   if (semesterFiles.length > 0) {
     await loadSemesterData(latestSemester || semesterFiles[0]);
+  } else {
+     console.error("Nenhum dado de semestre encontrado no manifesto ou no fallback local.");
+     showPageNotification("Erro", "<p>Não foi possível carregar a lista de disciplinas.</p>", t().ok);
   }
 }
 
 async function loadSemesterData(filename) {
   try {
-    let data = SEMESTER_DATA?.[filename];
+    let data;
 
-    if (!data) {
-      const response = await fetch(`semesters/${filename}`);
-      if (!response.ok) {
-        throw new Error(`Arquivo de semestre não encontrado: ${response.status}`);
-      }
-      data = await response.json();
+    // 1. Primeiro tentamos baixar o JSON dinâmico pela rede
+    try {
+        const response = await fetch(`semesters/${filename}`);
+        if (!response.ok) {
+          throw new Error(`Arquivo de semestre não encontrado na rede: ${response.status}`);
+        }
+        data = await response.json();
+    } catch (networkError) {
+        console.warn(`Falha ao buscar ${filename} via rede. Tentando fallback local.`, networkError);
+        // 2. Se falhar, recorremos aos dados estáticos pré-carregados no fallback
+        if (typeof SEMESTER_DATA !== 'undefined' && SEMESTER_DATA[filename]) {
+             data = SEMESTER_DATA[filename];
+        } else {
+             throw new Error(`Dados do semestre ${filename} não encontrados no fallback local.`);
+        }
     }
 
     const coursesSource = Array.isArray(data) ? data : data.courses;
@@ -1177,7 +1191,8 @@ async function loadSemesterData(filename) {
 
     renderUI();
   } catch (error) {
-    console.error("Erro ao carregar semestre:", error);
+    console.error("Erro fatal ao carregar semestre:", error);
+    showPageNotification("Erro", `<p>Não foi possível carregar os dados para ${filename.replace('.json', '')}.</p>`, t().ok);
   }
 }
 
