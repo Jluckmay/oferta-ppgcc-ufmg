@@ -488,7 +488,7 @@ const SEMESTER_DATA = {
         "type": "OP",
         "scheduleText": "3a e 5a-19:00/20:40",
         "teacher": "Prof. Michele Nogueira",
-        "room": "CAD 3-A208",
+        "room": "ICEX 2013",
         "startDate": "04/08/2026",
         "isolated": "Não",
         "language": "Português",

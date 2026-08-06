@@ -14,13 +14,13 @@
   <header class="hero" role="banner">
     <div class="hero__content">
       <p class="eyebrow">UFMG · PPGCC · Oferta <span id="semesterDisplay">2026-2</span></p>
-      <h1>Grade de Horários <span id="semesterTitle">2026-2</span></h1>
-      <p class="subtitle">Visualização interativa da oferta atualizada de disciplinas do PPGCC</p>
+      <h1 id="heroTitle">Grade de Horários <span id="semesterTitle">2026-2</span></h1>
+      <p id="heroSubtitle" class="subtitle">Visualização interativa da oferta atualizada de disciplinas do PPGCC</p>
       <div class="hero__actions">
-        <button class="btn btn--light" onclick="window.print()" aria-label="Imprimir ou salvar a grade em PDF">
+        <button id="heroPrintButton" class="btn btn--light" onclick="window.print()" aria-label="Imprimir ou salvar a grade em PDF">
           Imprimir / salvar PDF
         </button>
-        <button class="btn btn--ghost" onclick="clearFilters()" aria-label="Limpar filtros aplicados">
+        <button id="heroClearButton" class="btn btn--ghost" onclick="clearFilters()" aria-label="Limpar filtros aplicados">
           Limpar filtros
         </button>
       </div>
@@ -96,10 +96,13 @@
         <button class="toolbar-btn" onclick="importJSON()" title="Importar JSON" aria-label="Importar lista em JSON">
           ⬆️ JSON
         </button>
-        <button class="toolbar-btn" onclick="toggleLanguage()" title="Alternar idioma" aria-label="Alternar idioma">
+        <button class="toolbar-btn" id="googleAgendaBtn" onclick="openSelectedGoogleCalendar()" title="Adicionar as disciplinas selecionadas ao Google Agenda" aria-label="Adicionar as disciplinas selecionadas ao Google Agenda">
+          📅 Google Agenda
+        </button>
+        <button id="languageToggleButton" class="toolbar-btn" onclick="toggleLanguage()" title="Alternar idioma" aria-label="Alternar idioma">
           🌐 <span id="langDisplay">PT</span>
         </button>
-        <button class="toolbar-btn" onclick="toggleTheme()" title="Alternar tema" aria-label="Alternar tema">
+        <button id="themeToggleButton" class="toolbar-btn" onclick="toggleTheme()" title="Alternar tema" aria-label="Alternar tema">
           <span id="themeIcon">🌙</span>
         </button>
       </div>
@@ -107,14 +110,17 @@
 
     <!-- Result Info -->
     <section class="result-info" role="status" aria-live="polite">
-      <span id="resultCount">0</span> de <span id="totalCount">0</span> disciplinas
+      <span id="resultCount">0</span> <span id="resultInfoSummary">de</span> <span id="totalCount">0</span> <span id="resultInfoLabel">disciplinas</span>
+    </section>
+    <section id="calendarNote" class="calendar-note" aria-label="Nota sobre o Google Agenda">
+      <strong>Google Agenda:</strong> Selecione disciplinas na grade ou na lista e use o botão de agenda para exportar um arquivo .ics com os eventos recorrentes do semestre inteiro.
     </section>
 
     <!-- Schedule Grid -->
     <section class="schedule-card">
       <div class="section-header">
-        <h2>Grade semanal</h2>
-        <p>Os cards exibem disciplina, turma, sala e docente. Clique em um card para ver os detalhes completos.</p>
+        <h2 id="scheduleTitle">Grade semanal</h2>
+        <p id="scheduleDescription">Os cards exibem disciplina, turma, sala e docente. Clique em um card para ver os detalhes completos.</p>
       </div>
       <div id="scheduleGrid" class="schedule-grid"></div>
     </section>
@@ -122,8 +128,8 @@
     <!-- Course List -->
     <section class="list-card">
       <div class="section-header">
-        <h2>Lista de disciplinas</h2>
-        <p>Inclui carga horária, créditos, tipo, docente, sala, início das aulas e possibilidade de disciplina isolada.</p>
+        <h2 id="listTitle">Lista de disciplinas</h2>
+        <p id="listDescription">Inclui carga horária, créditos, tipo, docente, sala, início das aulas e possibilidade de disciplina isolada.</p>
       </div>
       <div id="courseList" class="course-list"></div>
     </section>
@@ -138,6 +144,20 @@
         <button class="modal-close" onclick="closeModal()" aria-label="Fechar detalhes da disciplina">✕</button>
       </div>
       <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <div id="pagePopup" class="page-popup" style="display: none;" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pagePopupTitle">
+    <div class="page-popup__overlay" onclick="closeConflictNotification()"></div>
+    <div class="page-popup__content">
+      <div class="page-popup__header">
+        <h2 id="pagePopupTitle"></h2>
+        <button class="modal-close" onclick="closeConflictNotification()" aria-label="Fechar aviso">✕</button>
+      </div>
+      <div class="page-popup__body" id="pagePopupBody"></div>
+      <div class="page-popup__footer">
+        <button class="toolbar-btn page-popup__button" id="pagePopupButton" type="button" onclick="closeConflictNotification()">OK</button>
+      </div>
     </div>
   </div>
 

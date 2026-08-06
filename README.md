@@ -22,6 +22,8 @@ O projeto foi pensado como uma ferramenta auxiliar de consulta para a oferta aca
 - Seleção de semestre por meio do filtro `Semestre`;
 - Filtros por código, tipo e disciplina isolada;
 - Modal com detalhes completos da disciplina;
+- Seleção por mouse na grade e na lista para marcar disciplinas de interesse;
+- Exportação para o Google Agenda em arquivo `.ics` com eventos recorrentes para o semestre inteiro das disciplinas selecionadas;
 - Exportação em JSON da oferta filtrada;
 - Exportação em imagem da grade utilizando html2canvas;
 - Importação de JSON local para uso direto pelo navegador;
@@ -75,12 +77,25 @@ DCC001; DCC002
 
 Nesse caso, a busca retorna disciplinas que correspondam a qualquer um dos termos informados.
 
+## Seleção por mouse e Google Agenda
+
+A interface agora permite selecionar disciplinas com o mouse diretamente na grade semanal e na lista de disciplinas. As disciplinas marcadas podem ser exportadas para o Google Agenda por meio do botão `📅 Google Agenda`.
+
+Quando há várias disciplinas selecionadas, a ação gera um arquivo `.ics` com múltiplos eventos recorrentes para o semestre, em vez de tentar abrir várias janelas do Google Calendar ao mesmo tempo. Isso evita que o navegador bloqueie o fluxo e mantém a criação compatível com a importação pelo Google Agenda.
+
+O comportamento da exportação segue o semestre ativo selecionado. Para cada disciplina, o evento recorrente respeita os dias de aula e o intervalo do semestre:
+
+- 1º semestre: da primeira segunda-feira de março até a primeira sexta-feira de julho;
+- 2º semestre: da primeira segunda-feira de agosto até a primeira sexta-feira de dezembro.
+
+Se houver conflitos de horário entre disciplinas selecionadas, a página avisa antes da exportação para que o usuário saiba que duas aulas não poderão ser adicionadas ao mesmo horário.
+
 ## Fluxo de uso
 
 1. Adicione um novo arquivo JSON em `semesters/`.
 2. Atualize o `manifest.json` com o nome desse arquivo, ou deixe o workflow do GitHub Actions gerar o manifesto automaticamente.
 3. Abra o site e escolha o semestre desejado no seletor.
-4. Use os filtros e as ações de exportação/importação conforme necessário.
+4. Use os filtros, selecione as disciplinas com o mouse e use o botão `Google Agenda` quando quiser abrir os eventos recorrentes no calendário.
 
 ## Deploy no GitHub Pages
 
