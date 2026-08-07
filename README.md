@@ -1,4 +1,5 @@
 # Grade de Horários — Oferta de Disciplinas PPGCC
+Este projeto é um fork de [oferta20262](https://github.com/ricardobrunoc/oferta20262), criado por [ricardobrunoc](https://github.com/ricardobrunoc). O código foi adaptado para a oferta de disciplinas do PPGCC sob a permissão do autor original para fins acadêmicos.
 
 Este repositório contém uma página web estática desenvolvida em HTML, CSS e JavaScript para visualizar a oferta de disciplinas do PPGCC/UFMG em formato de grade semanal de horários.
 
