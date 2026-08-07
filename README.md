@@ -117,4 +117,4 @@ A validação final das informações acadêmicas deve sempre ser conferida no s
 
 ## Licença
 
-Este projeto pode ser adaptado livremente para fins acadêmicos, pessoais ou educacionais.
+Este projeto está distribuído sob a [Licença MIT](LICENSE), podendo ser adaptado livremente para fins acadêmicos, pessoais ou educacionais desde que sejam dados os devidos créditos ao autor.
