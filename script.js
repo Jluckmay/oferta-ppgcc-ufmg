@@ -155,7 +155,8 @@ const TRANSLATIONS = {
 // State
 let state = {
   language: localStorage.getItem("language") || "pt",
-  theme: localStorage.getItem("theme") || "light",
+  // Verifica o localStorage; se estiver vazio, verifica a preferência do sistema
+  theme: localStorage.getItem("theme") || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'),
   courses: [],
   semesters: [],
   selectedSemester: "",
@@ -335,7 +336,6 @@ function updateTheme() {
     document.body.classList.remove("dark");
     document.getElementById("themeIcon").textContent = "🌙";
   }
-  localStorage.setItem("theme", state.theme);
 }
 
 function updateLanguage() {
@@ -347,6 +347,7 @@ function updateLanguage() {
 
 function toggleTheme() {
   state.theme = state.theme === "light" ? "dark" : "light";
+  localStorage.setItem("theme", state.theme); // Salva apenas quando o usuário clica no botão
   updateTheme();
 }
 
@@ -1213,4 +1214,13 @@ document.addEventListener("DOMContentLoaded", () => {
   updateTheme();
   updateLanguage();
   loadSemesters();
+
+  // Listener para detectar mudança de tema do sistema operacional em tempo real
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+    // Altera o tema automaticamente apenas se o usuário não tiver salvo uma preferência manual
+    if (!localStorage.getItem("theme")) {
+      state.theme = event.matches ? "dark" : "light";
+      updateTheme();
+    }
+  });
 });
