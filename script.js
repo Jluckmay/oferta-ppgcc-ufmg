@@ -1126,20 +1126,25 @@ function drawPdfHeader(pdf, title, subtitle) {
 function drawPdfSchedulePage(pdf, days, courses, part, totalParts) {
   const pageWidth = pdf.internal.pageSize.getWidth();
   const margin = 8;
-  const top = 27;
-  const headerHeight = 10;
+  const weekNavigatorTop = 23;
+  const weekNavigatorHeight = 8;
+  const top = 34;
+  const headerHeight = 14;
   const bottom = 8;
   const timeWidth = 27;
   const dayWidth = (pageWidth - margin * 2 - timeWidth) / days.length;
   const availableRowsHeight = pdf.internal.pageSize.getHeight() - top - headerHeight - bottom;
   const rowHeight = availableRowsHeight / DISPLAY_SLOTS.length;
   const semester = state.selectedSemester || "";
+  const dayNames = days.map((day) => getPdfDayLabel(day)).join(state.language === "pt" ? " e " : " and ");
 
   drawPdfHeader(
     pdf,
-    `${t().schedule} ${semester}`.trim(),
-    `${t().resultSummary} ${courses.length} ${t().disciplines} · Parte ${part}/${totalParts}`,
+    `${t().schedule} ${semester} — ${dayNames}`.trim(),
+    `${courses.length} ${t().disciplines} · ${state.language === "pt" ? "Parte" : "Part"} ${part}/${totalParts}`,
   );
+
+  drawPdfWeekNavigator(pdf, days, margin, weekNavigatorTop, pageWidth - margin * 2, weekNavigatorHeight);
 
   pdf.setDrawColor(190, 196, 208);
   pdf.setLineWidth(0.25);
@@ -1147,13 +1152,14 @@ function drawPdfSchedulePage(pdf, days, courses, part, totalParts) {
   pdf.rect(margin, top, timeWidth, headerHeight, "FD");
   pdf.setTextColor(255, 255, 255);
   pdf.setFont("helvetica", "bold");
-  pdf.setFontSize(9);
-  pdf.text(t().schedule_label, margin + timeWidth / 2, top + 6.4, { align: "center" });
+  pdf.setFontSize(10);
+  pdf.text(t().schedule_label.toUpperCase(), margin + timeWidth / 2, top + 8.7, { align: "center" });
 
   days.forEach((day, dayIndex) => {
     const x = margin + timeWidth + dayIndex * dayWidth;
     pdf.rect(x, top, dayWidth, headerHeight, "FD");
-    pdf.text(state.language === "pt" ? day.label : day.labelEn, x + dayWidth / 2, top + 6.4, { align: "center" });
+    pdf.setFontSize(12);
+    pdf.text(getPdfDayLabel(day).toUpperCase(), x + dayWidth / 2, top + 8.7, { align: "center" });
   });
 
   DISPLAY_SLOTS.forEach((slot, slotIndex) => {
@@ -1193,6 +1199,37 @@ function drawPdfSchedulePage(pdf, days, courses, part, totalParts) {
       });
     });
   });
+}
+
+function getPdfDayLabel(day) {
+  if (state.language !== "pt") return day.labelEn;
+  const labels = {
+    SEG: "Segunda-feira",
+    TER: "Terça-feira",
+    QUA: "Quarta-feira",
+    QUI: "Quinta-feira",
+    SEX: "Sexta-feira",
+  };
+  return labels[day.key] || day.label;
+}
+
+function drawPdfWeekNavigator(pdf, activeDays, x, y, width, height) {
+  const activeKeys = new Set(activeDays.map((day) => day.key));
+  const itemWidth = width / DAYS.length;
+
+  DAYS.forEach((day, index) => {
+    const active = activeKeys.has(day.key);
+    const itemX = x + index * itemWidth;
+    pdf.setFillColor(...(active ? [30, 64, 175] : [230, 233, 240]));
+    pdf.setDrawColor(...(active ? [30, 64, 175] : [200, 205, 215]));
+    pdf.roundedRect(itemX + 0.8, y, itemWidth - 1.6, height, 1.2, 1.2, "FD");
+    pdf.setTextColor(...(active ? [255, 255, 255] : [90, 96, 108]));
+    pdf.setFont("helvetica", active ? "bold" : "normal");
+    pdf.setFontSize(8);
+    pdf.text(getPdfDayLabel(day), itemX + itemWidth / 2, y + 5.2, { align: "center" });
+  });
+
+  pdf.setTextColor(25, 28, 36);
 }
 
 function drawPdfScheduleCourse(pdf, course, x, y, width, height) {
