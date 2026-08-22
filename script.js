@@ -63,7 +63,8 @@ const TRANSLATIONS = {
     yes: "Sim",
     no: "Não",
     clear: "Limpar filtros",
-    print: "Imprimir / salvar PDF",
+    print: "Baixar PDF",
+    exportPDF: "Baixar como PDF",
     exportImage: "Baixar como Imagem",
     exportJSON: "Baixar como JSON",
     importJSON: "Importar JSON",
@@ -121,7 +122,8 @@ const TRANSLATIONS = {
     yes: "Yes",
     no: "No",
     clear: "Clear filters",
-    print: "Print / save PDF",
+    print: "Download PDF",
+    exportPDF: "Download as PDF",
     exportImage: "Download as Image",
     exportJSON: "Download as JSON",
     importJSON: "Import JSON",
@@ -547,6 +549,8 @@ function applyStaticTranslations() {
   const heroSubtitle = document.getElementById("heroSubtitle");
   const heroPrintButton = document.getElementById("heroPrintButton");
   const heroClearButton = document.getElementById("heroClearButton");
+  const exportImageButton = document.getElementById("exportImageButton");
+  const exportPdfButton = document.getElementById("exportPdfButton");
   const languageButton = document.getElementById("languageToggleButton");
   const themeButton = document.getElementById("themeToggleButton");
   const scheduleTitle = document.getElementById("scheduleTitle");
@@ -589,6 +593,14 @@ function applyStaticTranslations() {
   if (heroClearButton) {
     heroClearButton.textContent = locale.clear;
     heroClearButton.setAttribute("aria-label", locale.clear);
+  }
+  if (exportImageButton) {
+    exportImageButton.title = locale.exportImage;
+    exportImageButton.setAttribute("aria-label", locale.exportImage);
+  }
+  if (exportPdfButton) {
+    exportPdfButton.title = locale.exportPDF;
+    exportPdfButton.setAttribute("aria-label", locale.exportPDF);
   }
   if (languageButton) {
     languageButton.setAttribute("title", currentLanguage === "pt" ? "Switch language" : "Alternar idioma");
@@ -1027,31 +1039,83 @@ function exportAsJSON() {
   URL.revokeObjectURL(url);
 }
 
-async function exportAsImage() {
+function getExportFileName(extension) {
+  const semester = state.selectedSemester ? `-${state.selectedSemester}` : "";
+  return `grade-horarios${semester}-${new Date().toISOString().split("T")[0]}.${extension}`;
+}
+
+async function captureSchedule() {
+  const schedule = document.querySelector(".schedule-card");
   const grid = document.getElementById("scheduleGrid");
-  if (!grid) return;
+  if (!schedule || !grid) throw new Error("Grade de horários não encontrada.");
+  if (typeof html2canvas === "undefined") throw new Error("html2canvas não está disponível.");
+
+  // Clone removes viewport scrolling constraints without changing visible page.
+  const exportWidth = Math.max(1100, grid.scrollWidth + 48);
+  const snapshot = schedule.cloneNode(true);
+  snapshot.classList.add("schedule-card--export");
+  snapshot.style.width = `${exportWidth}px`;
+  document.body.appendChild(snapshot);
 
   try {
-    // Use html2canvas if available, otherwise use a simple fallback
-    if (typeof html2canvas !== "undefined") {
-      const canvas = await html2canvas(grid, {
-        backgroundColor: state.theme === "dark" ? "#1a1b1e" : "#ffffff",
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-      });
+    return await html2canvas(snapshot, {
+      backgroundColor: state.theme === "dark" ? "#1a1b1e" : "#ffffff",
+      scale: Math.max(2, Math.min(3, window.devicePixelRatio || 1)),
+      useCORS: true,
+      allowTaint: false,
+      logging: false,
+      width: snapshot.scrollWidth,
+      height: snapshot.scrollHeight,
+      windowWidth: exportWidth,
+      windowHeight: snapshot.scrollHeight,
+      scrollX: 0,
+      scrollY: 0,
+    });
+  } finally {
+    snapshot.remove();
+  }
+}
 
-      const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/png");
-      link.download = `grade-horarios-${new Date().toISOString().split("T")[0]}.png`;
-      link.click();
-    } else {
-      alert("Para exportar como imagem, adicione a biblioteca html2canvas ao projeto.");
-    }
+async function exportAsImage() {
+  try {
+    const canvas = await captureSchedule();
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = getExportFileName("png");
+    link.click();
   } catch (error) {
     console.error("Erro ao exportar imagem:", error);
     alert("Erro ao exportar imagem. Tente novamente.");
+  }
+}
+
+async function exportAsPDF() {
+  try {
+    if (!window.jspdf?.jsPDF) throw new Error("jsPDF não está disponível.");
+    const canvas = await captureSchedule();
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
+    const margin = 8;
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const ratio = Math.min((pageWidth - margin * 2) / canvas.width, (pageHeight - margin * 2) / canvas.height);
+    const imageWidth = canvas.width * ratio;
+    const imageHeight = canvas.height * ratio;
+
+    pdf.addImage(
+      canvas.toDataURL("image/png"),
+      "PNG",
+      (pageWidth - imageWidth) / 2,
+      (pageHeight - imageHeight) / 2,
+      imageWidth,
+      imageHeight,
+      undefined,
+      "FAST",
+    );
+    pdf.save(getExportFileName("pdf"));
+  } catch (error) {
+    console.error("Erro ao exportar PDF:", error);
+    alert("Erro ao exportar PDF. Tente novamente.");
   }
 }
 
