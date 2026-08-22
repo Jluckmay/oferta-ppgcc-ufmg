@@ -1093,15 +1093,10 @@ async function exportAsPDF() {
   try {
     if (!window.jspdf?.jsPDF) throw new Error("jsPDF não está disponível.");
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
+    const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a3", compress: true });
     const courses = getFilteredCourses();
-    const dayGroups = [DAYS.slice(0, 2), DAYS.slice(2, 4), DAYS.slice(4, 5)];
 
-    dayGroups.forEach((days, index) => {
-      if (index > 0) pdf.addPage("a4", "landscape");
-      drawPdfSchedulePage(pdf, days, courses, index + 1, dayGroups.length);
-    });
-
+    drawPdfSchedulePage(pdf, DAYS, courses);
     drawPdfCourseList(pdf, courses);
     pdf.save(getExportFileName("pdf"));
   } catch (error) {
@@ -1111,7 +1106,7 @@ async function exportAsPDF() {
 }
 
 function drawPdfHeader(pdf, title, subtitle) {
-  pdf.setFillColor(30, 64, 175);
+  pdf.setFillColor(15, 93, 155);
   pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), 20, "F");
   pdf.setTextColor(255, 255, 255);
   pdf.setFont("helvetica", "bold");
@@ -1123,32 +1118,34 @@ function drawPdfHeader(pdf, title, subtitle) {
   pdf.setTextColor(25, 28, 36);
 }
 
-function drawPdfSchedulePage(pdf, days, courses, part, totalParts) {
+function drawPdfSchedulePage(pdf, days, courses) {
   const pageWidth = pdf.internal.pageSize.getWidth();
   const margin = 8;
-  const weekNavigatorTop = 23;
-  const weekNavigatorHeight = 8;
-  const top = 34;
+  const top = 26;
   const headerHeight = 14;
   const bottom = 8;
-  const timeWidth = 27;
+  const timeWidth = 30;
   const dayWidth = (pageWidth - margin * 2 - timeWidth) / days.length;
   const availableRowsHeight = pdf.internal.pageSize.getHeight() - top - headerHeight - bottom;
-  const rowHeight = availableRowsHeight / DISPLAY_SLOTS.length;
   const semester = state.selectedSemester || "";
-  const dayNames = days.map((day) => getPdfDayLabel(day)).join(state.language === "pt" ? " e " : " and ");
+  const slotDensities = DISPLAY_SLOTS.map((slot) => Math.max(
+    1,
+    ...days.map((day) => coursesForCell(courses, day.key, slot).length),
+  ));
+  const minimumRowHeight = 31;
+  const flexibleHeight = Math.max(0, availableRowsHeight - minimumRowHeight * DISPLAY_SLOTS.length);
+  const totalDensity = slotDensities.reduce((total, density) => total + density, 0);
+  const rowHeights = slotDensities.map((density) => minimumRowHeight + flexibleHeight * density / totalDensity);
 
   drawPdfHeader(
     pdf,
-    `${t().schedule} ${semester} — ${dayNames}`.trim(),
-    `${courses.length} ${t().disciplines} · ${state.language === "pt" ? "Parte" : "Part"} ${part}/${totalParts}`,
+    `${t().schedule} ${semester}`.trim(),
+    `${courses.length} ${t().disciplines} · ${state.language === "pt" ? "Semana completa" : "Full week"}`,
   );
-
-  drawPdfWeekNavigator(pdf, days, margin, weekNavigatorTop, pageWidth - margin * 2, weekNavigatorHeight);
 
   pdf.setDrawColor(190, 196, 208);
   pdf.setLineWidth(0.25);
-  pdf.setFillColor(30, 64, 175);
+  pdf.setFillColor(15, 93, 155);
   pdf.rect(margin, top, timeWidth, headerHeight, "FD");
   pdf.setTextColor(255, 255, 255);
   pdf.setFont("helvetica", "bold");
@@ -1163,7 +1160,9 @@ function drawPdfSchedulePage(pdf, days, courses, part, totalParts) {
   });
 
   DISPLAY_SLOTS.forEach((slot, slotIndex) => {
-    const y = top + headerHeight + slotIndex * rowHeight;
+    const rowHeight = rowHeights[slotIndex];
+    const previousRowsHeight = rowHeights.slice(0, slotIndex).reduce((total, height) => total + height, 0);
+    const y = top + headerHeight + previousRowsHeight;
     pdf.setFillColor(238, 241, 247);
     pdf.setTextColor(25, 28, 36);
     pdf.rect(margin, y, timeWidth, rowHeight, "FD");
@@ -1188,14 +1187,11 @@ function drawPdfSchedulePage(pdf, days, courses, part, totalParts) {
         return;
       }
 
-      const itemHeight = rowHeight / items.length;
+      const gap = 1.2;
+      const itemHeight = (rowHeight - gap * (items.length + 1)) / items.length;
       items.forEach((course, itemIndex) => {
-        const itemY = y + itemIndex * itemHeight;
-        if (itemIndex > 0) {
-          pdf.setDrawColor(220, 224, 232);
-          pdf.line(x + 1.5, itemY, x + dayWidth - 1.5, itemY);
-        }
-        drawPdfScheduleCourse(pdf, course, x + 2, itemY + 0.7, dayWidth - 4, itemHeight - 1);
+        const itemY = y + gap + itemIndex * (itemHeight + gap);
+        drawPdfScheduleCourse(pdf, course, x + 1.5, itemY, dayWidth - 3, itemHeight);
       });
     });
   });
@@ -1213,47 +1209,37 @@ function getPdfDayLabel(day) {
   return labels[day.key] || day.label;
 }
 
-function drawPdfWeekNavigator(pdf, activeDays, x, y, width, height) {
-  const activeKeys = new Set(activeDays.map((day) => day.key));
-  const itemWidth = width / DAYS.length;
-
-  DAYS.forEach((day, index) => {
-    const active = activeKeys.has(day.key);
-    const itemX = x + index * itemWidth;
-    pdf.setFillColor(...(active ? [30, 64, 175] : [230, 233, 240]));
-    pdf.setDrawColor(...(active ? [30, 64, 175] : [200, 205, 215]));
-    pdf.roundedRect(itemX + 0.8, y, itemWidth - 1.6, height, 1.2, 1.2, "FD");
-    pdf.setTextColor(...(active ? [255, 255, 255] : [90, 96, 108]));
-    pdf.setFont("helvetica", active ? "bold" : "normal");
-    pdf.setFontSize(8);
-    pdf.text(getPdfDayLabel(day), itemX + itemWidth / 2, y + 5.2, { align: "center" });
-  });
-
-  pdf.setTextColor(25, 28, 36);
-}
-
 function drawPdfScheduleCourse(pdf, course, x, y, width, height) {
-  const compact = height < 11;
-  const titleSize = compact ? 6.4 : 7.5;
-  const metaSize = compact ? 6 : 6.8;
-  const lineHeight = compact ? 2.35 : 2.8;
+  const compact = height < 13;
+  const accent = course.type === "OP" ? [22, 116, 76] : [15, 93, 155];
+  const titleSize = compact ? 6.8 : 8;
+  const metaSize = compact ? 6.2 : 7;
+  const lineHeight = compact ? 2.45 : 3;
+  const innerX = x + 3.2;
+  const textWidth = width - 5;
   const maxTitleLines = compact ? 1 : 2;
-  const titleLines = pdf.splitTextToSize(shortName(course.name), width).slice(0, maxTitleLines);
+  const titleLines = pdf.splitTextToSize(shortName(course.name), textWidth).slice(0, maxTitleLines);
+
+  pdf.setFillColor(248, 249, 252);
+  pdf.setDrawColor(205, 210, 220);
+  pdf.roundedRect(x, y, width, height, 1.5, 1.5, "FD");
+  pdf.setFillColor(...accent);
+  pdf.roundedRect(x, y, 1.8, height, 0.8, 0.8, "F");
 
   pdf.setTextColor(25, 28, 36);
   pdf.setFont("helvetica", "bold");
   pdf.setFontSize(titleSize);
-  pdf.text(titleLines, x, y + lineHeight);
+  pdf.text(titleLines, innerX, y + lineHeight + 0.7);
 
-  let cursorY = y + titleLines.length * lineHeight + lineHeight;
+  let cursorY = y + titleLines.length * lineHeight + lineHeight + 0.7;
   pdf.setFontSize(metaSize);
-  pdf.text(`${course.code} · ${course.className} · ${course.room || t().notInformedRoom}`, x, cursorY);
+  pdf.text(`${course.code} · ${course.className} · ${course.room || t().notInformedRoom}`, innerX, cursorY);
   cursorY += lineHeight;
 
-  if (!compact && cursorY < y + height - 1) {
+  if (!compact && cursorY < y + height - 1.2) {
     pdf.setFont("helvetica", "normal");
-    const teacher = pdf.splitTextToSize(course.teacher || t().notInformed, width)[0];
-    pdf.text(teacher, x, cursorY);
+    const teacher = pdf.splitTextToSize(course.teacher || t().notInformed, textWidth)[0];
+    pdf.text(teacher, innerX, cursorY);
   }
 }
 
