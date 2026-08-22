@@ -1092,31 +1092,188 @@ async function exportAsImage() {
 async function exportAsPDF() {
   try {
     if (!window.jspdf?.jsPDF) throw new Error("jsPDF não está disponível.");
-    const canvas = await captureSchedule();
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4", compress: true });
-    const margin = 8;
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const ratio = Math.min((pageWidth - margin * 2) / canvas.width, (pageHeight - margin * 2) / canvas.height);
-    const imageWidth = canvas.width * ratio;
-    const imageHeight = canvas.height * ratio;
+    const courses = getFilteredCourses();
+    const dayGroups = [DAYS.slice(0, 2), DAYS.slice(2, 4), DAYS.slice(4, 5)];
 
-    pdf.addImage(
-      canvas.toDataURL("image/png"),
-      "PNG",
-      (pageWidth - imageWidth) / 2,
-      (pageHeight - imageHeight) / 2,
-      imageWidth,
-      imageHeight,
-      undefined,
-      "FAST",
-    );
+    dayGroups.forEach((days, index) => {
+      if (index > 0) pdf.addPage("a4", "landscape");
+      drawPdfSchedulePage(pdf, days, courses, index + 1, dayGroups.length);
+    });
+
+    drawPdfCourseList(pdf, courses);
     pdf.save(getExportFileName("pdf"));
   } catch (error) {
     console.error("Erro ao exportar PDF:", error);
     alert("Erro ao exportar PDF. Tente novamente.");
   }
+}
+
+function drawPdfHeader(pdf, title, subtitle) {
+  pdf.setFillColor(30, 64, 175);
+  pdf.rect(0, 0, pdf.internal.pageSize.getWidth(), 20, "F");
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(15);
+  pdf.text(title, 10, 9);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(8.5);
+  pdf.text(subtitle, 10, 15);
+  pdf.setTextColor(25, 28, 36);
+}
+
+function drawPdfSchedulePage(pdf, days, courses, part, totalParts) {
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const margin = 8;
+  const top = 27;
+  const headerHeight = 10;
+  const bottom = 8;
+  const timeWidth = 27;
+  const dayWidth = (pageWidth - margin * 2 - timeWidth) / days.length;
+  const availableRowsHeight = pdf.internal.pageSize.getHeight() - top - headerHeight - bottom;
+  const rowHeight = availableRowsHeight / DISPLAY_SLOTS.length;
+  const semester = state.selectedSemester || "";
+
+  drawPdfHeader(
+    pdf,
+    `${t().schedule} ${semester}`.trim(),
+    `${t().resultSummary} ${courses.length} ${t().disciplines} · Parte ${part}/${totalParts}`,
+  );
+
+  pdf.setDrawColor(190, 196, 208);
+  pdf.setLineWidth(0.25);
+  pdf.setFillColor(30, 64, 175);
+  pdf.rect(margin, top, timeWidth, headerHeight, "FD");
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(9);
+  pdf.text(t().schedule_label, margin + timeWidth / 2, top + 6.4, { align: "center" });
+
+  days.forEach((day, dayIndex) => {
+    const x = margin + timeWidth + dayIndex * dayWidth;
+    pdf.rect(x, top, dayWidth, headerHeight, "FD");
+    pdf.text(state.language === "pt" ? day.label : day.labelEn, x + dayWidth / 2, top + 6.4, { align: "center" });
+  });
+
+  DISPLAY_SLOTS.forEach((slot, slotIndex) => {
+    const y = top + headerHeight + slotIndex * rowHeight;
+    pdf.setFillColor(238, 241, 247);
+    pdf.setTextColor(25, 28, 36);
+    pdf.rect(margin, y, timeWidth, rowHeight, "FD");
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(8.5);
+    pdf.text(`${slot.start}\n${slot.end}`, margin + timeWidth / 2, y + rowHeight / 2 - 1.5, {
+      align: "center",
+      baseline: "middle",
+    });
+
+    days.forEach((day, dayIndex) => {
+      const x = margin + timeWidth + dayIndex * dayWidth;
+      const items = coursesForCell(courses, day.key, slot);
+      pdf.setFillColor(255, 255, 255);
+      pdf.rect(x, y, dayWidth, rowHeight, "FD");
+
+      if (items.length === 0) {
+        pdf.setTextColor(130, 136, 148);
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(8);
+        pdf.text(t().free, x + dayWidth / 2, y + rowHeight / 2, { align: "center" });
+        return;
+      }
+
+      const itemHeight = rowHeight / items.length;
+      items.forEach((course, itemIndex) => {
+        const itemY = y + itemIndex * itemHeight;
+        if (itemIndex > 0) {
+          pdf.setDrawColor(220, 224, 232);
+          pdf.line(x + 1.5, itemY, x + dayWidth - 1.5, itemY);
+        }
+        drawPdfScheduleCourse(pdf, course, x + 2, itemY + 0.7, dayWidth - 4, itemHeight - 1);
+      });
+    });
+  });
+}
+
+function drawPdfScheduleCourse(pdf, course, x, y, width, height) {
+  const compact = height < 11;
+  const titleSize = compact ? 6.4 : 7.5;
+  const metaSize = compact ? 6 : 6.8;
+  const lineHeight = compact ? 2.35 : 2.8;
+  const maxTitleLines = compact ? 1 : 2;
+  const titleLines = pdf.splitTextToSize(shortName(course.name), width).slice(0, maxTitleLines);
+
+  pdf.setTextColor(25, 28, 36);
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(titleSize);
+  pdf.text(titleLines, x, y + lineHeight);
+
+  let cursorY = y + titleLines.length * lineHeight + lineHeight;
+  pdf.setFontSize(metaSize);
+  pdf.text(`${course.code} · ${course.className} · ${course.room || t().notInformedRoom}`, x, cursorY);
+  cursorY += lineHeight;
+
+  if (!compact && cursorY < y + height - 1) {
+    pdf.setFont("helvetica", "normal");
+    const teacher = pdf.splitTextToSize(course.teacher || t().notInformed, width)[0];
+    pdf.text(teacher, x, cursorY);
+  }
+}
+
+function drawPdfCourseList(pdf, courses) {
+  const margin = 12;
+  const bottom = 12;
+  let y = 29;
+
+  const addListPage = () => {
+    pdf.addPage("a4", "portrait");
+    drawPdfHeader(
+      pdf,
+      `${t().list} ${state.selectedSemester || ""}`.trim(),
+      `${courses.length} ${t().disciplines}`,
+    );
+    y = 29;
+  };
+
+  addListPage();
+  if (courses.length === 0) {
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(10);
+    pdf.text(t().noResults, margin, y);
+    return;
+  }
+
+  courses.forEach((course) => {
+    const contentWidth = pdf.internal.pageSize.getWidth() - margin * 2 - 6;
+    const title = `${course.number}. ${course.name}`;
+    const titleLines = pdf.splitTextToSize(title, contentWidth);
+    const detailLines = [
+      `${t().code_label}: ${course.code} · ${course.className}    ${t().schedule_label}: ${course.scheduleText || t().notInformed}`,
+      `${t().teacher_label}: ${course.teacher || t().notInformed}`,
+      `${t().room_label}: ${course.room || t().notInformedRoom}    ${t().workload_label}: ${course.workload ?? t().notInformed} h · ${course.credits ?? t().notInformed}`,
+      `${t().type}: ${course.type || t().notInformed}    ${t().isolated_label}: ${course.isolated || t().notInformed}    ${t().language_label}: ${course.language || t().notInformed}`,
+      `${state.language === "pt" ? "Início das aulas" : "Classes start"}: ${course.startDate || t().notInformed}`,
+    ].flatMap((line) => pdf.splitTextToSize(line, contentWidth));
+    const cardHeight = 7 + titleLines.length * 4.2 + detailLines.length * 3.7;
+
+    if (y + cardHeight > pdf.internal.pageSize.getHeight() - bottom) addListPage();
+
+    pdf.setFillColor(247, 248, 251);
+    pdf.setDrawColor(210, 214, 224);
+    pdf.roundedRect(margin, y - 4, pdf.internal.pageSize.getWidth() - margin * 2, cardHeight, 1.5, 1.5, "FD");
+    pdf.setTextColor(25, 28, 36);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(10);
+    pdf.text(titleLines, margin + 3, y + 1);
+    let detailY = y + 2 + titleLines.length * 4.2;
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(8.2);
+    detailLines.forEach((line) => {
+      pdf.text(line, margin + 3, detailY);
+      detailY += 3.7;
+    });
+    y += cardHeight + 3;
+  });
 }
 
 function importJSON() {
