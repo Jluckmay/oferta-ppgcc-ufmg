@@ -1154,7 +1154,11 @@ function drawPdfSchedulePage(pdf, days, courses) {
 
   days.forEach((day, dayIndex) => {
     const x = margin + timeWidth + dayIndex * dayWidth;
+    pdf.setFillColor(15, 93, 155);
+    pdf.setDrawColor(190, 196, 208);
     pdf.rect(x, top, dayWidth, headerHeight, "FD");
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFont("helvetica", "bold");
     pdf.setFontSize(12);
     pdf.text(getPdfDayLabel(day).toUpperCase(), x + dayWidth / 2, top + 8.7, { align: "center" });
   });
@@ -1212,9 +1216,9 @@ function getPdfDayLabel(day) {
 function drawPdfScheduleCourse(pdf, course, x, y, width, height) {
   const compact = height < 13;
   const accent = course.type === "OP" ? [22, 116, 76] : [15, 93, 155];
-  const titleSize = compact ? 6.8 : 8;
-  const metaSize = compact ? 6.2 : 7;
-  const lineHeight = compact ? 2.45 : 3;
+  const titleSize = compact ? 6.2 : 8;
+  const metaSize = compact ? 5.6 : 7;
+  const lineHeight = compact ? 2.15 : 3;
   const innerX = x + 3.2;
   const textWidth = width - 5;
   const maxTitleLines = compact ? 1 : 2;
@@ -1236,7 +1240,7 @@ function drawPdfScheduleCourse(pdf, course, x, y, width, height) {
   pdf.text(`${course.code} · ${course.className} · ${course.room || t().notInformedRoom}`, innerX, cursorY);
   cursorY += lineHeight;
 
-  if (!compact && cursorY < y + height - 1.2) {
+  if (cursorY < y + height - 0.8) {
     pdf.setFont("helvetica", "normal");
     const teacher = pdf.splitTextToSize(course.teacher || t().notInformed, textWidth)[0];
     pdf.text(teacher, innerX, cursorY);
