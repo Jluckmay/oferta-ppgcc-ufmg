@@ -673,7 +673,7 @@ function openModal(course) {
     </div>
     <div class="modal-actions">
       <button class="toolbar-btn" type="button" onclick="toggleCourseSelection(state.selectedCourse)">${isSelected ? t().selected : t().select}</button>
-      <button class="toolbar-btn" type="button" onclick="openGoogleCalendarForCourse(state.selectedCourse)">${t().addToGoogleCalendar}</button>
+      <button class="toolbar-btn" type="button" onclick="openGoogleCalendarForCourse(state.selectedCourse)">${t().googleCalendar}</button>
     </div>
   `;
 
